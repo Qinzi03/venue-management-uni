@@ -2,21 +2,19 @@
   <view class="content">
     <image class="logo" src="/static/logo.png"></image>
     <view class="text-area">
-      <text class="title">{{ title }}</text>
+      <text class="title"> 您还没有登录，请点击下方【我的】进行登录使用 </text>
     </view>
+    <uv-tabbar :value="tabIndex" @change="(index) => (tabIndex = index)">
+      <uv-tabbar-item text="首页" icon="home"></uv-tabbar-item>
+      <uv-tabbar-item text="场馆" icon="grid"></uv-tabbar-item>
+      <uv-tabbar-item text="我的" icon="account"></uv-tabbar-item>
+    </uv-tabbar>
   </view>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      title: 'Hello',
-    }
-  },
-  onLoad() {},
-  methods: {},
-}
+<script setup>
+import { ref } from "vue";
+const tabIndex = ref(0);
 </script>
 
 <style>
@@ -42,7 +40,7 @@ export default {
 }
 
 .title {
-  font-size: 36rpx;
+  font-size: 28rpx;
   color: #8f8f94;
 }
 </style>
