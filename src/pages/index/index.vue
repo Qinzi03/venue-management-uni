@@ -4,19 +4,11 @@
     <view class="text-area">
       <text class="title"> 您还没有登录，请点击下方【我的】进行登录使用 </text>
     </view>
-    <uv-tabbar :value="tabIndex" @change="(index) => (tabIndex = index)">
-      <uv-tabbar-item text="首页" icon="home"></uv-tabbar-item>
-      <uv-tabbar-item text="场馆" icon="grid"></uv-tabbar-item>
-      <uv-tabbar-item text="我的" icon="account"></uv-tabbar-item>
-    </uv-tabbar>
+    <ve-footer tabName="index"></ve-footer>
   </view>
 </template>
 
-<script setup>
-import { ref } from "vue";
-const tabIndex = ref(0);
-</script>
-
+<script setup></script>
 <style>
 .content {
   display: flex;

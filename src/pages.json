@@ -5,8 +5,21 @@
 			"style": {
 				"navigationBarTitleText": "首页"
 			}
+		},
+		{
+			"path": "pages/person/index",
+			"style": {
+				"navigationBarTitleText": "个人"
+			}
+		},
+		{
+			"path": "pages/venue/index",
+			"style": {
+				"navigationBarTitleText": "场馆"
+			}
 		}
 	],
+	"entryPagePath":"pages/index/index",
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
 		"navigationBarTitleText": "uni-app",
@@ -16,7 +29,8 @@
 	"easycom": {
 		  "autoscan": true,
 		  "custom": {
-			  "^uv-(.*)": "@climblee/uv-ui/components/uv-$1/uv-$1.vue"
+			  "^uv-(.*)": "@climblee/uv-ui/components/uv-$1/uv-$1.vue",
+				"^ve-(.*)":"@/components/ve-$1/ve-$1.vue"
 		  }
 	  }
 }
