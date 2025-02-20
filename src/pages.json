@@ -17,6 +17,12 @@
 			"style": {
 				"navigationBarTitleText": "场馆"
 			}
+		},
+		{
+			"path": "pages/createVenue/index",
+			"style": {
+				"navigationBarTitleText": "创建场馆"
+			}
 		}
 	],
 	"entryPagePath":"pages/index/index",
