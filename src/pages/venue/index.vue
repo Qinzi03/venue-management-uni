@@ -13,7 +13,7 @@
       <uv-list-item v-for="item in createList" :key="item.id">
         <uv-cell :title="item.name" :label="`${item.onLineNum}人`">
           <template #value>
-            <view class="flex">
+            <view class="flex" @click="onUpdatePartner(item)">
               <uv-icon name="plus"></uv-icon>合伙人管理
             </view>
           </template>
@@ -49,23 +49,78 @@
     </uv-action-sheet>
 
     <!-- 加入场馆 -->
-    <uv-modal
-      ref="modal"
-      title="加入场馆"
-      :showCancelButton="true"
-      @confirm="onSubmit"
-      @cancel="onCancelJoin"
-    >
+    <uv-modal ref="modal" title="加入场馆">
       <uv-form
         labelPosition="left"
         :model="joinedForm"
         :rules="rules"
         ref="joinFormEl"
+        labelWidth="100"
       >
-        <uv-form-item label="微信名" prop="name" borderBottom labelWidth="60">
+        <uv-form-item label="场馆名称" prop="name" borderBottom>
           <uv-input v-model="joinedForm.name" border="none"> </uv-input>
         </uv-form-item>
       </uv-form>
+      <template #confirmButton>
+        <view class="flex marginB20">
+          <view class="marginR20">
+            <uv-button
+              text="取消"
+              size="small"
+              @click="onCancelJoin"
+            ></uv-button
+          ></view>
+          <view class="marginR20">
+            <uv-button
+              text="确定"
+              type="primary"
+              size="small"
+              @click="onSubmit"
+            ></uv-button>
+          </view>
+        </view>
+      </template>
+    </uv-modal>
+
+    <!-- 合伙人管理 -->
+    <uv-modal ref="partnerModal" title="合伙人管理">
+      <uv-form
+        labelPosition="left"
+        :model="partnerForm"
+        :rules="rules"
+        ref="partnerFormEl"
+      >
+        <uv-form-item label="微信名" prop="name" borderBottom labelWidth="60">
+          <uv-input v-model="partnerForm.name" border="none"> </uv-input>
+        </uv-form-item>
+      </uv-form>
+      <template #confirmButton>
+        <view class="flex marginB20">
+          <view class="marginR20">
+            <uv-button
+              text="取消"
+              size="small"
+              @click="onCancelPartner"
+            ></uv-button
+          ></view>
+          <view class="marginR20">
+            <uv-button
+              type="primary"
+              text="添加合伙人"
+              size="small"
+              @click="onAddPartner"
+            ></uv-button
+          ></view>
+          <view class="marginR20">
+            <uv-button
+              type="error"
+              text="删除合伙人"
+              size="small"
+              @click="onDelPartner"
+            ></uv-button>
+          </view>
+        </view>
+      </template>
     </uv-modal>
   </view>
 </template>
@@ -159,6 +214,38 @@ const onSubmit = async () => {
   uni.showToast({
     icon: "success",
     title: "提交成功",
+  });
+  setTimeout(() => {
+    onCancelJoin();
+  }, 2000);
+};
+
+const partnerModal = ref();
+const partnerFormEl = ref();
+const partnerForm = reactive({
+  name: "",
+});
+const currentItem = ref({});
+// 合伙人管理
+const onUpdatePartner = (item) => {
+  partnerModal.value.open();
+  currentItem.value = item;
+};
+const onCancelPartner = () => {
+  partnerModal.value.close();
+};
+const onAddPartner = async () => {
+  const res = await partnerFormEl.value.validate();
+  uni.showToast({
+    icon: "success",
+    title: "添加成功",
+  });
+};
+const onDelPartner = async () => {
+  const res = await partnerFormEl.value.validate();
+  uni.showToast({
+    icon: "success",
+    title: "删除成功",
   });
 };
 </script>

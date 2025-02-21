@@ -37,12 +37,7 @@
       <uv-form-item label="场馆电话" prop="phone" borderBottom>
         <uv-input v-model="form.phone" border="none"> </uv-input>
       </uv-form-item>
-      <uv-button
-        type="primary"
-        text="提交"
-        customStyle="margin-top: 10px"
-        @click="onSubmit"
-      ></uv-button>
+
       <uv-action-sheet
         ref="typeSelect"
         :actions="actions"
@@ -51,6 +46,11 @@
       >
       </uv-action-sheet>
     </uv-form>
+    <view class="formFooter">
+      <view class="footerBtn">
+        <uv-button type="primary" text="提交" @click="onSubmit"></uv-button>
+      </view>
+    </view>
   </view>
 </template>
 <script setup>
@@ -114,7 +114,10 @@ const onSubmit = async () => {
 };
 </script>
 <style lang="scss" scoped>
-.content {
-  padding: 10px;
+::v-deep(.content) {
+  padding: 10px 16px;
+  .uv-form-item__body {
+    padding: 16px 0 !important;
+  }
 }
 </style>

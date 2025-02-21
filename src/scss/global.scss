@@ -1,0 +1,118 @@
+.marginL8 {
+  margin-left: 8rpx;
+}
+.marginL20 {
+  margin-left: 20rpx;
+}
+.marginR20 {
+  margin-right: 20rpx;
+}
+
+.marginT10 {
+  margin-top: 10rpx;
+}
+.marginT20 {
+  margin-top: 20rpx;
+}
+.marginB10 {
+  margin-bottom: 10rpx;
+}
+.marginB20 {
+  margin-bottom: 20rpx;
+}
+.font24 {
+  font-size: 24rpx;
+}
+.font28 {
+  font-size: 28rpx;
+}
+.font34 {
+  font-size: 34rpx;
+}
+
+.textColor {
+  color: #474747;
+  font-weight: normal;
+}
+.label {
+  color: #606266;
+}
+.text {
+  color: $uni-text-color;
+}
+.header {
+  background-color: #ffffff;
+  padding: 10rpx 32rpx;
+  margin-bottom: 10rpx;
+}
+
+.header .row {
+  width: 100%;
+}
+
+.listContent {
+  padding: 0 32rpx;
+  background-color: #ffffff;
+}
+
+.cardContent,
+.formContent {
+  padding: 8rpx 32rpx 0 32rpx;
+}
+
+.cardList {
+  background-color: #ffffff;
+  padding: 24rpx 32rpx;
+  border-radius: 16rpx;
+  margin-bottom: 20rpx;
+}
+.cardBorder {
+  border-top: 1px solid #eef0f6;
+  width: calc(100% + 64rpx);
+  position: relative;
+  left: -32rpx;
+}
+
+.titlePre {
+  width: 8rpx;
+  height: 34rpx;
+  background: #1042df;
+  border-radius: 100rpx;
+}
+
+.flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.flex-start {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.formFooter {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding-bottom: 30rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  z-index: 99;
+}
+.formFooter .footerBtnItem {
+  width: 48%;
+  font-size: 34rpx;
+  margin: 20rpx 20rpx 0;
+}
+.formFooter .footerBtn {
+  width: 100%;
+  font-size: 34rpx;
+}
+
+.star {
+  color: rgba(211, 0, 69, 1);
+}
