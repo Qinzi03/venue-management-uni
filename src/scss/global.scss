@@ -14,6 +14,9 @@
 .marginT20 {
   margin-top: 20rpx;
 }
+.marginT40 {
+  margin-top: 40rpx;
+}
 .marginB10 {
   margin-bottom: 10rpx;
 }
@@ -88,6 +91,11 @@
 .flex-start {
   display: flex;
   justify-content: flex-start;
+  align-items: center;
+}
+.flex-end {
+  display: flex;
+  justify-content: flex-end;
   align-items: center;
 }
 

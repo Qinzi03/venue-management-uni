@@ -23,6 +23,18 @@
 			"style": {
 				"navigationBarTitleText": "创建场馆"
 			}
+		},
+		{
+			"path": "pages/venueDetail/index",
+			"style": {
+				"navigationBarTitleText": "场馆详情"
+			}
+		},
+		{
+			"path": "pages/venuePersonManage/index",
+			"style": {
+				"navigationBarTitleText": "场馆人员管理"
+			}
 		}
 	],
 	"entryPagePath":"pages/index/index",

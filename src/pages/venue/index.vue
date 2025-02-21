@@ -11,9 +11,13 @@
 
     <uv-list v-if="!current" class="marginT20" :itemStyle="{ height: '50px' }">
       <uv-list-item v-for="item in createList" :key="item.id">
-        <uv-cell :title="item.name" :label="`${item.onLineNum}人`">
+        <uv-cell
+          :title="item.name"
+          :label="`${item.onLineNum}人`"
+          @click="onToPage"
+        >
           <template #value>
-            <view class="flex" @click="onUpdatePartner(item)">
+            <view class="flex" @click.stop="onUpdatePartner(item)">
               <uv-icon name="plus"></uv-icon>合伙人管理
             </view>
           </template>
@@ -230,6 +234,12 @@ const currentItem = ref({});
 const onUpdatePartner = (item) => {
   partnerModal.value.open();
   currentItem.value = item;
+};
+// 跳转详情
+const onToPage = (item) => {
+  uni.navigateTo({
+    url: "/pages/venueDetail/index",
+  });
 };
 const onCancelPartner = () => {
   partnerModal.value.close();
