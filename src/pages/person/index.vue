@@ -5,15 +5,15 @@
         <view>
           <image
             :src="
-              personalInfo.nickname
+              personalInfo.nickName
                 ? '/static/user-logo.png'
                 : '/static/user-logo-gray.png'
             "
             class="user-logo"
           ></image>
         </view>
-        <view v-if="personalInfo.nickname">
-          <view class="user">{{ personalInfo.nickname }}</view>
+        <view v-if="personalInfo.nickName">
+          <view class="user">{{ personalInfo.nickName }}</view>
           <view class="phone">{{ personalInfo.phoneNum }}</view>
         </view>
         <view v-else>
@@ -60,10 +60,11 @@
 
 <script setup>
 import { ref, reactive } from "vue";
+import { login } from "@/config/api.js";
 
 // 定义个人信息数据
 const personalInfo = reactive({
-  nickname: "",
+  nickName: "",
   phoneNum: "",
 });
 
@@ -71,7 +72,7 @@ const personalInfo = reactive({
 const checkLoginStatus = () => {
   const userInfo = uni.getStorageSync("userInfo");
   if (userInfo) {
-    personalInfo.nickname = userInfo.nickname;
+    personalInfo.nickName = userInfo.nickName;
     personalInfo.phoneNum = userInfo.phoneNum;
   }
 };
@@ -108,22 +109,16 @@ const authorizeLogin = async () => {
     });
 
     // 这里需要将 code 和用户信息发送到后端服务器，以下是示例代码，实际使用时需要替换为真实的后端接口地址
-    const response = await uni.request({
-      url: "https://your-backend-api.com/login",
-      method: "POST",
-      data: {
-        code,
-        userInfo,
-      },
+    const res = await login({
+      code,
+      ...userInfo,
     });
-
     // 处理后端返回的结果
-    const { data } = response;
-    if (data.code === 200) {
+    if (res.code === 200) {
       // 登录成功，保存用户信息到本地存储
-      uni.setStorageSync("userInfo", data.userInfo);
-      personalInfo.nickname = data.userInfo.nickname;
-      personalInfo.phoneNum = data.userInfo.phoneNum;
+      uni.setStorageSync("userInfo", { ...userInfo, userId: res.data.user_id });
+      personalInfo.nickName = userInfo.nickName;
+      personalInfo.phoneNum = userInfo.phoneNum;
       uni.showToast({
         title: "登录成功",
         icon: "success",

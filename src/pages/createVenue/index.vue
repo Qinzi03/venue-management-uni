@@ -14,7 +14,7 @@
         label="场馆类型"
         prop="type"
         borderBottom
-        @click="onTypeSelect"
+        @click="onTypeClick"
       >
         <uv-input
           v-model="form.type"
@@ -28,14 +28,14 @@
           <uv-icon name="arrow-right"></uv-icon>
         </template>
       </uv-form-item>
-      <uv-form-item label="桌子数量" prop="tableNum" borderBottom>
-        <uv-input v-model="form.tableNum" border="none"> </uv-input>
+      <uv-form-item label="桌子数量" prop="table_count" borderBottom>
+        <uv-input v-model="form.table_count" border="none"> </uv-input>
       </uv-form-item>
-      <uv-form-item label="场馆地址" prop="address" borderBottom>
-        <uv-input v-model="form.address" border="none"> </uv-input>
+      <uv-form-item label="场馆地址" prop="location " borderBottom>
+        <uv-input v-model="form.location" border="none"> </uv-input>
       </uv-form-item>
-      <uv-form-item label="场馆电话" prop="phone" borderBottom>
-        <uv-input v-model="form.phone" border="none"> </uv-input>
+      <uv-form-item label="场馆电话" prop="contact " borderBottom>
+        <uv-input v-model="form.contact" border="none"> </uv-input>
       </uv-form-item>
 
       <uv-action-sheet
@@ -55,15 +55,15 @@
 </template>
 <script setup>
 import { reactive, ref } from "vue";
-
+import { saveVenue } from "@/config/api.js";
 // 加入场馆
 const form = reactive({
   name: "",
   type: "",
   typeId: "",
-  tableNum: "",
-  address: "",
-  phone: "",
+  table_count: "",
+  location: "",
+  contact: "",
 });
 const actions = ref([
   {
@@ -71,6 +71,12 @@ const actions = ref([
     id: 1,
   },
 ]);
+
+const typeSelect = ref();
+const onTypeClick = () => {
+  typeSelect.value.open();
+};
+
 const onTypeSelect = ({ id, name }) => {
   form.type = name;
   form.typeId = id;
@@ -88,13 +94,13 @@ const rules = reactive({
     message: "请选择场馆类型",
     trigger: ["blur", "change"],
   },
-  tableNum: {
+  table_count: {
     type: "string",
     required: true,
     message: "请填写桌子数量",
     trigger: ["blur", "change"],
   },
-  address: {
+  location: {
     type: "string",
     required: true,
     message: "请填写场馆地址",
@@ -106,7 +112,8 @@ const formEl = ref();
 
 const onSubmit = async () => {
   const res = await formEl.value.validate();
-  console.log(res);
+  console.log(res, form);
+  await saveVenue(form);
   uni.showToast({
     icon: "success",
     title: "提交成功",

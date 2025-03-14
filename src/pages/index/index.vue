@@ -1,30 +1,33 @@
 <template>
-  <view class="content">
+  <view class="page">
     <image
-      v-if="!personalInfo.nickname"
+      v-if="!personalInfo.nickName"
       class="logo"
       src="/static/logo.png"
     ></image>
-    <view v-if="!personalInfo.nickname" class="text-area">
+    <view v-if="!personalInfo.nickName" class="text-area">
       <text class="title"> 您还没有登录，请点击下方【我的】进行登录使用 </text>
     </view>
-    <view v-else>
-      <uv-calendars
-        insert
-        :selected="onRemarkDate"
-        @change="change"
-      ></uv-calendars>
-    </view>
-    <view class="list">
-      <text class="title">最近常去的场馆：</text>
-      <view v-for="(item, index) in frequantList" :key="index">
-        <uv-cell
-          :title="item.name"
-          value="去打卡"
-          isLink
-          @click="onPage"
-          :label="`${item.count}次`"
-        ></uv-cell>
+    <view class="content" v-else>
+      <view class="calendars">
+        <uv-calendars
+          insert
+          :selected="onRemarkDate"
+          @change="change"
+        ></uv-calendars>
+      </view>
+
+      <view class="list">
+        <text class="title">最近常去的场馆：</text>
+        <view v-for="(item, index) in frequantList" :key="index">
+          <uv-cell
+            :title="item.name"
+            value="去打卡"
+            isLink
+            @click="onPage"
+            :label="`${item.count}次`"
+          ></uv-cell>
+        </view>
       </view>
     </view>
     <ve-footer tabName="index"></ve-footer>
@@ -36,7 +39,7 @@ import { ref, reactive } from "vue";
 
 // 定义个人信息数据
 const personalInfo = reactive({
-  nickname: "zhangsan",
+  nickName: "",
   phoneNum: "",
 });
 
@@ -44,7 +47,7 @@ const personalInfo = reactive({
 const checkLoginStatus = () => {
   const userInfo = uni.getStorageSync("userInfo");
   if (userInfo) {
-    personalInfo.nickname = userInfo.nickname;
+    personalInfo.nickName = userInfo.nickName;
     personalInfo.phoneNum = userInfo.phoneNum;
   }
 };
@@ -52,8 +55,8 @@ const checkLoginStatus = () => {
 // 页面加载时检查登录状态
 checkLoginStatus();
 const onRemarkDate = ref([
-  { date: `2025-03-02`, info: "打卡", badge: true, infoColor: "#1989fa" },
-  { date: `2025-03-06`, info: "打卡", infoColor: "#1989fa", badge: true },
+  // { date: `2025-03-02`, info: "打卡", badge: true, infoColor: "#1989fa" },
+  // { date: `2025-03-06`, info: "打卡", infoColor: "#1989fa", badge: true },
 ]);
 
 const change = (res) => {
@@ -82,11 +85,16 @@ const onPage = () => {
 };
 </script>
 <style lang="scss">
-.content {
+.page {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+
+.content {
+  width: 100%;
 }
 
 .logo {
@@ -121,5 +129,19 @@ const onPage = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.uv-calendar-item__weeks-box-item {
+  height: 40px !important;
+  width: 36px !important;
+}
+.uv-calendar-item--isDay {
+  background-color: transparent !important;
+  .uv-calendar-item__weeks-box-item {
+    background-color: #3c9cff !important;
+    border-radius: 4px;
+  }
+}
+.calendars {
+  height: 50vh;
 }
 </style>
