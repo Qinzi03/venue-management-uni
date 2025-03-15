@@ -17,7 +17,7 @@
         @click="onTypeClick"
       >
         <uv-input
-          v-model="form.type"
+          v-model="form.typeName"
           disabled
           disabledColor="#ffffff"
           placeholder="请选择场馆类型"
@@ -60,7 +60,7 @@ import { saveVenue } from "@/config/api.js";
 const form = reactive({
   name: "",
   type: "",
-  typeId: "",
+  typeName: "",
   table_count: "",
   location: "",
   contact: "",
@@ -78,8 +78,8 @@ const onTypeClick = () => {
 };
 
 const onTypeSelect = ({ id, name }) => {
-  form.type = name;
-  form.typeId = id;
+  form.type = id;
+  form.typeName = name;
 };
 const rules = reactive({
   name: {
@@ -88,7 +88,7 @@ const rules = reactive({
     message: "请填写场馆名称",
     trigger: ["blur", "change"],
   },
-  type: {
+  typeName: {
     type: "string",
     required: true,
     message: "请选择场馆类型",
@@ -113,11 +113,13 @@ const formEl = ref();
 const onSubmit = async () => {
   const res = await formEl.value.validate();
   console.log(res, form);
+  form.table_count = Number(form.table_count);
   await saveVenue(form);
   uni.showToast({
     icon: "success",
     title: "提交成功",
   });
+  uni.navigateBack();
 };
 </script>
 <style lang="scss" scoped>

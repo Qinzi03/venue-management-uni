@@ -35,6 +35,12 @@
 			"style": {
 				"navigationBarTitleText": "场馆人员管理"
 			}
+		},
+		{
+			"path": "pages/search/index",
+			"style": {
+				"navigationBarTitleText": "搜索页"
+			}
 		}
 	],
 	"entryPagePath":"pages/index/index",

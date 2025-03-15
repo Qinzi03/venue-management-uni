@@ -6,7 +6,7 @@
       src="/static/logo.png"
     ></image>
     <view v-if="!personalInfo.nickName" class="text-area">
-      <text class="title"> 您还没有登录，请点击下方【我的】进行登录使用 </text>
+      <text class="tip"> 您还没有登录，请点击下方【我的】进行登录使用 </text>
     </view>
     <view class="content" v-else>
       <view class="calendars">
@@ -17,9 +17,23 @@
         ></uv-calendars>
       </view>
 
+      <view class="search">
+        <uv-search
+          placeholder="搜索场馆"
+          disabled
+          :showAction="false"
+          @click="onPageSeach"
+        ></uv-search>
+      </view>
       <view class="list">
-        <text class="title">最近常去的场馆：</text>
-        <view v-for="(item, index) in frequantList" :key="index">
+        <view class="title">
+          <text>最近常去的场馆：</text>
+        </view>
+        <view
+          v-if="frequantList.length"
+          v-for="(item, index) in frequantList"
+          :key="index"
+        >
           <uv-cell
             :title="item.name"
             value="去打卡"
@@ -27,6 +41,12 @@
             @click="onPage"
             :label="`${item.count}次`"
           ></uv-cell>
+        </view>
+        <view class="empty" v-else>
+          <uv-empty
+            mode="order"
+            text="您还没有前往过场馆，请点击上方搜索前往"
+          ></uv-empty>
         </view>
       </view>
     </view>
@@ -64,23 +84,29 @@ const change = (res) => {
 };
 
 const frequantList = [
-  {
-    name: "场馆1",
-    count: 5,
-  },
-  {
-    name: "场馆2",
-    count: 3,
-  },
-  {
-    name: "场馆3",
-    count: 2,
-  },
+  // {
+  //   name: "场馆1",
+  //   count: 5,
+  // },
+  // {
+  //   name: "场馆2",
+  //   count: 3,
+  // },
+  // {
+  //   name: "场馆3",
+  //   count: 2,
+  // },
 ];
 // 去打卡
 const onPage = () => {
   uni.navigateTo({
-    url: "pages/venueDetail/index",
+    url: "/pages/venueDetail/index",
+  });
+};
+
+const onPageSeach = () => {
+  uni.navigateTo({
+    url: "/pages/search/index",
   });
 };
 </script>
@@ -111,7 +137,7 @@ const onPage = () => {
   justify-content: center;
 }
 
-.title {
+.tip {
   font-size: 28rpx;
   color: #8f8f94;
 }
@@ -120,9 +146,9 @@ const onPage = () => {
   width: 100%;
   margin-top: 20px;
   .title {
-    font-size: 16px;
+    font-size: 14px;
     color: #333333;
-    padding: 0px 20px;
+    padding: 10px 20px;
   }
 }
 .flex {
@@ -143,5 +169,11 @@ const onPage = () => {
 }
 .calendars {
   height: 50vh;
+}
+.search {
+  padding: 10px 16px;
+}
+.empty {
+  margin-top: 20px;
 }
 </style>

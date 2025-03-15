@@ -11,15 +11,15 @@ export function http(path, params = {}, method = "POST", loading = true) {
   return new Promise((resolve, reject) => {
     uni.request({
       header: {
-        Authorization: uni.getStorageSync("'cookie-sessionId") || "",
+        Cookie: uni.getStorageSync("cookie-sessionId") || "",
       },
       url: serve + path,
       method,
       data: params,
       async success(res) {
-        uni.hideLoading();
+        // uni.hideLoading();
 
-        console.log("响应拦截：", path, params, res.data);
+        console.log("响应拦截：", path, res, params, res.data);
         if (res.data?.code !== 200) {
           uni.showToast({
             icon: "error",
@@ -28,17 +28,20 @@ export function http(path, params = {}, method = "POST", loading = true) {
           });
           reject(res.data);
         }
+        if (path === "/login") {
+          uni.setStorageSync("cookie-sessionId", res.header["Set-Cookie"]);
+        }
         resolve(res.data);
       },
       fail(err) {
-        uni.hideLoading();
+        // uni.hideLoading();
         uni.reLaunch({
           url: "/pages/index/index",
         });
         reject(err);
       },
       complete() {
-        // uni.hideLoading();    // 在showToast之前执行会受影响
+        uni.hideLoading(); // 在showToast之前执行会受影响
       },
     });
   });
