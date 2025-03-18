@@ -58,7 +58,11 @@
   background-color: #ffffff;
 }
 
-.cardContent,
+.cardContent{
+  padding: 8rpx 32rpx 60rpx 32rpx;
+  background-color: #f3f4f6;
+}
+
 .formContent {
   padding: 8rpx 32rpx 0 32rpx;
 }

@@ -8,13 +8,18 @@
           :border="false"
         >
           <view>
-            <view class="flex-start"
-              ><uv-icon name="map-fill" color="#474747" size="14"></uv-icon
-              >{{ detailForm.address }}</view
+            <view class="flex-start marginB">
+              <view class="marginR">
+                <uv-icon name="map-fill" color="#474747" size="14"></uv-icon>
+              </view>
+
+              {{ detailForm.address }}</view
             >
-            <view class="flex-start"
-              ><uv-icon name="phone-fill" color="#474747" size="14"></uv-icon
-              >{{ detailForm.phone }}</view
+            <view class="flex-start marginB">
+              <view class="marginR">
+                <uv-icon name="phone-fill" color="#474747" size="14"></uv-icon>
+              </view>
+              {{ detailForm.phone }}</view
             >
             <view
               v-for="(item, index) in detailForm.notifies"
@@ -64,7 +69,7 @@
     <view class="cardContent">
       <view class="cardList" v-for="(item, index) in list" :key="item.id">
         <view class="marginT10 font28 flex-start">
-          <view class="label">编号：</view
+          <view class="label">桌子编号：</view
           ><view class="textColor">{{ index + 1 }}</view></view
         >
         <view class="marginT10 marginB20 font28 flex-start"
@@ -72,6 +77,13 @@
           ><view class="textColor">{{ item.statusStr }}</view></view
         >
         <view class="cardBorder flex-end btnRow">
+          <view class="marginR20">
+            <uv-button
+              text="打卡"
+              size="small"
+              @click="onClockInSingle(item.id)"
+            ></uv-button>
+          </view>
           <view class="marginR20">
             <uv-button text="删除" size="small" @click="onPublish"></uv-button>
           </view>
@@ -85,39 +97,53 @@
           </view>
         </view>
       </view>
-    </view>
 
-    <view class="add" @click="onAdd">
-      <uv-icon name="plus" size="30" color="#ffffff"></uv-icon>
+      <uv-button
+        @click="onAdd"
+        class="add"
+        type="primary"
+        text="增加桌子"
+      ></uv-button>
     </view>
   </view>
 </template>
 <script setup>
 import { reactive, ref } from "vue";
-
-const detailForm = reactive({
-  name: "春来花几枝/***",
-  address: "人民广场南京路步行街",
-  phone: "13515511551",
-  notifies: ["3.3号开始营业", "开业打8折"],
+import { getDetailsVenue, signIn } from "@/config/api.js";
+import { onLoad } from "@dcloudio/uni-app";
+let detailForm = reactive({
+  name: "",
+  address: "",
+  phone: "",
+  notifies: [],
 });
-
+const venueId = ref("");
 const onClockIn = () => {};
+const onClockInSingle = async (id) => {
+  await signIn({ venue_id: venueId.value, table_id: id });
+  uni.showToast({
+    duration: 2000,
+    title: "打卡成功！",
+  });
+};
 const onPublish = () => {};
 
-const list = ref([
-  {
-    id: "123232",
-    status: 1,
-    statusStr: "使用中",
-  },
-  {
-    id: "12323245",
-    status: 0,
-    statusStr: "未开始",
-  },
-]);
+const list = ref([]);
 
+const getDetailsInfo = async (id) => {
+  const res = await getDetailsVenue(id);
+  detailForm.name = res.venue.Name;
+  detailForm.address = res.venue.Location;
+  detailForm.phone = res.venue.Contact;
+  detailForm.notifies = res.venue.notifies;
+  list.value = res.tables.map((item) => {
+    return {
+      id: item.ID,
+      status: item.Status,
+      statusStr: item.Status ? "使用中" : "未开始",
+    };
+  });
+};
 const onAdd = () => {
   list.value.push({
     id: Math.random(),
@@ -126,7 +152,13 @@ const onAdd = () => {
   });
 };
 
-// 跳转详情
+onLoad((option) => {
+  console.log(option);
+  venueId.value = option.id;
+  getDetailsInfo(option.id);
+});
+
+// 跳转人员详情
 const onToPage = (item) => {
   uni.navigateTo({
     url: "/pages/venuePersonManage/index",
@@ -145,9 +177,6 @@ const onToPage = (item) => {
     padding: 0 15px 8px !important;
   }
 }
-.cardContent {
-  background-color: #f3f4f6;
-}
 
 .row {
   width: 100%;
@@ -162,15 +191,12 @@ const onToPage = (item) => {
   margin-top: 8px;
 }
 .add {
-  position: fixed;
-  width: 60px;
-  height: 60px;
-  border-radius: 60px;
-  background-color: #1989fa;
-  bottom: 120px;
-  right: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  margin-top: 20px;
+}
+.marginB {
+  margin-bottom: 10px;
+}
+.marginR {
+  margin-right: 8px;
 }
 </style>

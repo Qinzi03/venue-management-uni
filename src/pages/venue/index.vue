@@ -1,14 +1,14 @@
 <template>
-  <view>
+  <view class="page">
     <uv-list
       v-if="createList.length"
       class="marginT20"
       :itemStyle="{ height: '50px' }"
     >
-      <uv-list-item v-for="item in createList" :key="item.id">
-        <uv-cell
-          :title="item.name"
-          :label="`${item.onLineNum}人`"
+      <!-- <uv-list-item v-for="item in createList" :key="item.id"> -->
+      <!-- <uv-cell
+          :title="item.Name"
+          :label="`打卡人数：${item.onLineNum || 0}人`"
           @click="onToPage"
         >
           <template #value>
@@ -16,8 +16,43 @@
               <uv-icon name="plus"></uv-icon>合伙人管理
             </view>
           </template>
-        </uv-cell>
-      </uv-list-item>
+        </uv-cell> -->
+      <!-- </uv-list-item> -->
+      <view class="cardContent">
+        <view class="cardList" v-for="item in createList" :key="item.id">
+          <view class="row">
+            <view class="title">{{ item.Name }}</view>
+            <view class="value">打卡人数：{{ item.onLineNum || 0 }}人</view>
+          </view>
+
+          <view class="marginT20">
+            <view class="person">场馆合伙人：</view>
+
+            <view class="row marginT20">
+              <view class="marginR">
+                <uv-avatar
+                  src="https://via.placeholder.com/200x200.png/2878ff"
+                  text="北"
+                  fontSize="18"
+                  randomBgColor
+                ></uv-avatar>
+              </view>
+              <view class="marginR">
+                <uv-avatar
+                  src="https://via.placeholder.com/200x200.png/2878ff"
+                  text="北"
+                  fontSize="18"
+                  randomBgColor
+                ></uv-avatar>
+              </view>
+
+              <view class="flex" @click.stop="onUpdatePartner(item)">
+                <uv-icon name="plus"></uv-icon>增加合伙人
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
     </uv-list>
     <view class="empty" v-else>
       <uv-empty
@@ -79,14 +114,11 @@ onMounted(() => {
 
 const getListData = async () => {
   const res = await myVenue();
-  createList.value = res || [];
+  createList.value = res.venues || [];
 };
 
 const createList = ref([]);
 
-// 选择新增类型
-const actionSheet = ref();
-const modal = ref();
 const onAdd = () => {
   uni.navigateTo({
     url: `/pages/createVenue/index`,
@@ -138,6 +170,11 @@ const onDelPartner = async () => {
 };
 </script>
 <style lang="scss" scoped>
+.page {
+  background-color: #f3f4f6;
+  height: 100vh;
+  overflow: auto;
+}
 .add {
   position: fixed;
   width: 40px;
@@ -161,11 +198,36 @@ const onDelPartner = async () => {
 .marginT20 {
   margin-top: 20px;
 }
+.marginR {
+  margin-right: 10px;
+}
 .empty {
   position: absolute;
   left: 50%;
   top: 50%;
   margin-left: -140px;
   margin-top: -80px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .title {
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .label {
+    color: #9e9e9e;
+  }
+  .value {
+    font-size: 12px;
+    color: #333333;
+  }
+}
+.person {
+  color: #333333;
+  margin-bottom: 4px;
 }
 </style>

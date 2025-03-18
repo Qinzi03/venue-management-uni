@@ -20,6 +20,16 @@ export function http(path, params = {}, method = "POST", loading = true) {
         // uni.hideLoading();
 
         console.log("响应拦截：", path, res, params, res.data);
+        // 70000表示登录过期
+        if (res.data?.code === 70000) {
+          uni.showToast({
+            icon: "error",
+            duration: 2000,
+            title: "您的登录已过期，请重新登陆",
+          });
+          uni.switchTab("/pages/person/index");
+          reject(res.data);
+        }
         if (res.data?.code !== 200) {
           uni.showToast({
             icon: "error",

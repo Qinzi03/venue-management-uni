@@ -56,7 +56,8 @@
 
 <script setup>
 import { ref, reactive } from "vue";
-
+import { getVisitedVenue, getSignInDate } from "@/config/api.js";
+import { onShow } from "@dcloudio/uni-app";
 // 定义个人信息数据
 const personalInfo = reactive({
   nickName: "",
@@ -79,11 +80,15 @@ const onRemarkDate = ref([
   // { date: `2025-03-06`, info: "打卡", infoColor: "#1989fa", badge: true },
 ]);
 
+const getDateInfo = async () => {
+  const res = await getSignInDate();
+  onRemarkDate.value = res.data;
+};
 const change = (res) => {
   console.log(res);
 };
 
-const frequantList = [
+const frequantList = ref([
   // {
   //   name: "场馆1",
   //   count: 5,
@@ -96,7 +101,12 @@ const frequantList = [
   //   name: "场馆3",
   //   count: 2,
   // },
-];
+]);
+
+const getVisitedData = async () => {
+  const res = await getVisitedVenue();
+  frequantList.value = res.data;
+};
 // 去打卡
 const onPage = () => {
   uni.navigateTo({
@@ -109,6 +119,11 @@ const onPageSeach = () => {
     url: "/pages/search/index",
   });
 };
+
+onShow(() => {
+  getVisitedData();
+  getDateInfo();
+});
 </script>
 <style lang="scss">
 .page {

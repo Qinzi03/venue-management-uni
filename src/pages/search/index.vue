@@ -8,11 +8,11 @@
     ></uv-search>
     <view class="list">
       <uv-list>
-        <uv-list-item v-for="item in list" :key="item.id" :title="item.name">
+        <uv-list-item v-for="item in list" :key="item.ID" :title="item.Name">
           <view
             class="listItem"
             @click="onPage(item)"
-            v-html="item.name"
+            v-html="item.Name"
           ></view>
         </uv-list-item>
       </uv-list>
@@ -21,26 +21,19 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
+import { getAllVenue } from "@/config/api.js";
 
-const list = ref([
-  {
-    name: "和高科技打算给那尽快更换",
-    id: 1,
-  },
-  {
-    name: "回到房间",
-    id: 2,
-  },
-  {
-    name: "就看看",
-    id: 3,
-  },
-]);
+const list = ref([]);
+const getListData = async () => {
+  const res = await getAllVenue();
+  list.value = res.venues;
+};
 const keyword = ref("");
 const onInput = () => {
   changeColor(list.value);
 };
+
 const changeColor = (resultsList) => {
   resultsList.map((item, index) => {
     if (keyword.value) {
@@ -49,8 +42,8 @@ const changeColor = (resultsList) => {
       // 高亮替换v-html值
       let replaceString =
         "<font style='color:#1042df'>" + keyword.value + "</font>";
-      if (resultsList[index].name) {
-        resultsList[index].name = item.name.replace(replaceReg, replaceString);
+      if (resultsList[index].Name) {
+        resultsList[index].Name = item.Name.replace(replaceReg, replaceString);
       }
     }
   });
@@ -59,9 +52,13 @@ const changeColor = (resultsList) => {
 // 去打卡
 const onPage = (item) => {
   uni.navigateTo({
-    url: `/pages/venueDetail/index?${item.id}`,
+    url: `/pages/venueDetail/index?id=${item.ID}`,
   });
 };
+
+onMounted(() => {
+  getListData();
+});
 </script>
 
 <style scoped>
