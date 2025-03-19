@@ -13,6 +13,7 @@
         <uv-calendars
           insert
           :selected="onRemarkDate"
+          :showMonth="false"
           @change="change"
         ></uv-calendars>
       </view>
@@ -30,7 +31,7 @@
           <text>最近常去的场馆：</text>
         </view>
         <view
-          v-if="frequantList.length"
+          v-if="frequantList && frequantList.length"
           v-for="(item, index) in frequantList"
           :key="index"
         >
@@ -45,6 +46,7 @@
         <view class="empty" v-else>
           <uv-empty
             mode="order"
+            icon="https://tse3-mm.cn.bing.net/th/id/OIP-C.A6sNosOAiGe9IDUlLVETvAHaHa?rs=1&pid=ImgDetMain"
             text="您还没有前往过场馆，请点击上方搜索前往"
           ></uv-empty>
         </view>
@@ -82,7 +84,10 @@ const onRemarkDate = ref([
 
 const getDateInfo = async () => {
   const res = await getSignInDate();
-  onRemarkDate.value = res.data;
+  onRemarkDate.value = res.data.map((item) => {
+    return { date: item, badge: true };
+  });
+  console.log("----getDateInfo", res.data, onRemarkDate.value);
 };
 const change = (res) => {
   console.log(res);
@@ -136,6 +141,7 @@ onShow(() => {
 
 .content {
   width: 100%;
+  padding-bottom: 40px;
 }
 
 .logo {
@@ -177,10 +183,35 @@ onShow(() => {
 }
 .uv-calendar-item--isDay {
   background-color: transparent !important;
+  color: #1989fa !important;
+
   .uv-calendar-item__weeks-box-item {
-    background-color: #3c9cff !important;
+    background-color: transparent !important;
     border-radius: 4px;
   }
+}
+.calendar-item--uv-calendar-item--checked {
+  background-color: transparent !important;
+  color: #1989fa !important;
+}
+.uv-calendar__header {
+  background-color: #54a9fe;
+}
+.uv-calendar__header-btn {
+  border-top-color: #fff !important;
+  border-left-color: #fff !important;
+}
+.uv-calendar__header-text {
+  color: #fff !important;
+}
+.uv-calendar-item__weeks-box-circle {
+  background-image: url("https://c-ssl.duitang.com/uploads/blog/202009/04/20200904121217_uWL5A.jpeg");
+  background-size: 50%;
+  background-repeat: no-repeat;
+  right: -20px !important;
+  width: 30px !important;
+  height: 30px !important;
+  background-color: transparent !important;
 }
 .calendars {
   height: 50vh;

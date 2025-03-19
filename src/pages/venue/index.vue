@@ -5,19 +5,6 @@
       class="marginT20"
       :itemStyle="{ height: '50px' }"
     >
-      <!-- <uv-list-item v-for="item in createList" :key="item.id"> -->
-      <!-- <uv-cell
-          :title="item.Name"
-          :label="`打卡人数：${item.onLineNum || 0}人`"
-          @click="onToPage"
-        >
-          <template #value>
-            <view class="flex" @click.stop="onUpdatePartner(item)">
-              <uv-icon name="plus"></uv-icon>合伙人管理
-            </view>
-          </template>
-        </uv-cell> -->
-      <!-- </uv-list-item> -->
       <view class="cardContent">
         <view class="cardList" v-for="item in createList" :key="item.id">
           <view class="row">
@@ -26,7 +13,7 @@
           </view>
 
           <view class="marginT20">
-            <view class="person">场馆合伙人：</view>
+            <!-- <view class="person">场馆合伙人：</view> -->
 
             <view class="row marginT20">
               <view class="marginR">
@@ -57,6 +44,7 @@
     <view class="empty" v-else>
       <uv-empty
         mode="list"
+        icon="https://tse3-mm.cn.bing.net/th/id/OIP-C.A6sNosOAiGe9IDUlLVETvAHaHa?rs=1&pid=ImgDetMain"
         text="您还没有创建的场馆，请点击右下角进行创建"
       ></uv-empty>
     </view>
@@ -206,7 +194,7 @@ const onDelPartner = async () => {
   left: 50%;
   top: 50%;
   margin-left: -140px;
-  margin-top: -80px;
+  margin-top: -180px;
 }
 
 .row {
