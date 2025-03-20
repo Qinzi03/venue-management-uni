@@ -15,7 +15,7 @@ export const saveVenue = (params) => {
 export const getAllVenue = (params) => {
   return http("/auth/venue/all", params, "GET");
 };
-// 获取所有场馆
+// 获取场馆详情
 export const getDetailsVenue = (id) => {
   return http(`/auth/venue/detail/${id}`, {}, "GET");
 };
@@ -30,4 +30,28 @@ export const getSignInDate = () => {
 // 打卡
 export const signIn = (params) => {
   return http(`/auth/venue/sign_in`, params, "POST");
+};
+// 搜索用户
+export const searchUser = (params) => {
+  return http(`/auth/user/search`, params, "GET");
+};
+// 添加合作伙伴
+export const addPartner = (params) => {
+  return http(`/auth/venue/parter/add`, params, "POST");
+};
+// 删除合作伙伴
+export const delPartner = (params) => {
+  return http(`/auth/venue/parter/delete`, params, "POST");
+};
+// 合作伙伴列表
+export const getPartnerList = (params) => {
+  return http(`/auth/venue/parter/all/${params.id}`, params, "GET");
+};
+// 日签到记录
+export const dailySignIn = (params) => {
+  return http(`/auth/venue/daily_sign_in`, params, "GET");
+};
+// 发布公告
+export const publishNotice = (params) => {
+  return http(`/auth/venue/notice`, params, "GET");
 };

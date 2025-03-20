@@ -38,13 +38,6 @@
             <view class="flex-end marginT40">
               <view class="marginR20">
                 <uv-button
-                  text="打卡"
-                  size="small"
-                  @click="onClockIn"
-                ></uv-button
-              ></view>
-              <view class="marginR20">
-                <uv-button
                   text="发布通知"
                   type="primary"
                   size="small"
@@ -79,20 +72,21 @@
         <view class="cardBorder flex-end btnRow">
           <view class="marginR20">
             <uv-button
+              v-if="!hasSignIn"
               text="打卡"
               size="small"
               @click="onClockInSingle(item.id)"
             ></uv-button>
           </view>
           <view class="marginR20">
-            <uv-button text="删除" size="small" @click="onPublish"></uv-button>
+            <uv-button text="删除" size="small" @click="onDelTable"></uv-button>
           </view>
           <view class="marginR20">
             <uv-button
               :text="`${item.status ? '开机' : '关机'}`"
               type="primary"
               size="small"
-              @click="onPublish"
+              @click="onChangeTableStatus"
             ></uv-button>
           </view>
         </view>
@@ -104,12 +98,23 @@
         type="primary"
         text="增加桌子"
       ></uv-button>
+
+      <uv-modal ref="publishModal" title="发布公告" @confirm="onConfirmPub">
+        <view class="slot-content">
+          <uv-textarea v-model="notice" placeholder="请输入内容"></uv-textarea>
+        </view>
+      </uv-modal>
     </view>
   </view>
 </template>
 <script setup>
 import { reactive, ref } from "vue";
-import { getDetailsVenue, signIn } from "@/config/api.js";
+import {
+  getDetailsVenue,
+  signIn,
+  dailySignIn,
+  publishNotice,
+} from "@/config/api.js";
 import { onLoad } from "@dcloudio/uni-app";
 let detailForm = reactive({
   name: "",
@@ -118,7 +123,6 @@ let detailForm = reactive({
   notifies: [],
 });
 const venueId = ref("");
-const onClockIn = () => {};
 const onClockInSingle = async (id) => {
   await signIn({ venue_id: venueId.value, table_id: id });
   uni.showToast({
@@ -126,7 +130,22 @@ const onClockInSingle = async (id) => {
     title: "打卡成功！",
   });
 };
-const onPublish = () => {};
+
+const notice = ref("");
+const publishModal = ref();
+const onPublish = () => {
+  publishModal.value.open();
+};
+
+const onConfirmPub = () => {
+  if (!notice.value) {
+    uni.showToast("请先输入公告内容！");
+    return;
+  }
+  publishNotice({ venue_id: venueId.value, notice: notice.value });
+};
+const onDelTable = () => {};
+const onChangeTableStatus = () => {};
 
 const list = ref([]);
 
@@ -150,6 +169,15 @@ const onAdd = () => {
     status: 0,
     statusStr: "未开始",
   });
+};
+
+const hasSignIn = ref(false);
+
+const getSignInStatus = async () => {
+  const today = new Date().toLocaleDateString;
+  const res = await dailySignIn({ date: today });
+  // 场馆id在日签到的所有场馆中，表示已经签到过了
+  hasSignIn.value = res.data.some((item) => item.venue_id === venueId.value);
 };
 
 onLoad((option) => {

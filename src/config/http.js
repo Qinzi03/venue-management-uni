@@ -27,8 +27,10 @@ export function http(path, params = {}, method = "POST", loading = true) {
             duration: 2000,
             title: "您的登录已过期，请重新登陆",
           });
-          uni.switchTab("/pages/person/index");
+          uni.clearStorageSync();
+          uni.navigateTo({ url: "/pages/person/index" });
           reject(res.data);
+          return;
         }
         if (res.data?.code !== 200) {
           uni.showToast({
@@ -37,6 +39,7 @@ export function http(path, params = {}, method = "POST", loading = true) {
             title: res.data.message,
           });
           reject(res.data);
+          return;
         }
         if (path === "/login") {
           uni.setStorageSync("cookie-sessionId", res.header["Set-Cookie"]);

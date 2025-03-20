@@ -7,7 +7,7 @@
     >
       <view class="cardContent">
         <view class="cardList" v-for="item in createList" :key="item.id">
-          <view class="row">
+          <view class="row" @click="onToPage">
             <view class="title">{{ item.Name }}</view>
             <view class="value">打卡人数：{{ item.onLineNum || 0 }}人</view>
           </view>
@@ -16,24 +16,26 @@
             <!-- <view class="person">场馆合伙人：</view> -->
 
             <view class="row marginT20">
-              <view class="marginR">
+              <view
+                class="avatar"
+                v-for="partnerItem in partnerList"
+                :key="item.id"
+              >
                 <uv-avatar
                   src="https://via.placeholder.com/200x200.png/2878ff"
                   text="北"
                   fontSize="18"
                   randomBgColor
                 ></uv-avatar>
-              </view>
-              <view class="marginR">
-                <uv-avatar
-                  src="https://via.placeholder.com/200x200.png/2878ff"
-                  text="北"
-                  fontSize="18"
-                  randomBgColor
-                ></uv-avatar>
+                <view
+                  class="deleteIcon"
+                  @click="onDelPartner(item, partnerItem)"
+                >
+                  <uv-icon name="close-circle"></uv-icon>
+                </view>
               </view>
 
-              <view class="flex" @click.stop="onUpdatePartner(item)">
+              <view class="flex" @click.stop="onClickPartner(item)">
                 <uv-icon name="plus"></uv-icon>增加合伙人
               </view>
             </view>
@@ -51,61 +53,32 @@
     <view class="add" @click="onAdd"> 创建场馆 </view>
     <ve-footer tabName="venue"> </ve-footer>
 
-    <!-- 合伙人管理 -->
-    <uv-modal ref="partnerModal" title="合伙人管理">
-      <uv-form
-        labelPosition="left"
-        :model="partnerForm"
-        :rules="rules"
-        ref="partnerFormEl"
-      >
-        <uv-form-item label="微信名" prop="name" borderBottom labelWidth="60">
-          <uv-input v-model="partnerForm.name" border="none"> </uv-input>
-        </uv-form-item>
-      </uv-form>
-      <template #confirmButton>
-        <view class="flex marginB20">
-          <view class="marginR20">
-            <uv-button
-              text="取消"
-              size="small"
-              @click="onCancelPartner"
-            ></uv-button
-          ></view>
-          <view class="marginR20">
-            <uv-button
-              type="primary"
-              text="添加合伙人"
-              size="small"
-              @click="onAddPartner"
-            ></uv-button
-          ></view>
-          <view class="marginR20">
-            <uv-button
-              type="error"
-              text="删除合伙人"
-              size="small"
-              @click="onDelPartner"
-            ></uv-button>
-          </view>
-        </view>
-      </template>
-    </uv-modal>
+    <uv-modal
+      ref="modal"
+      title="删除合伙人"
+      :content="`确定将${delName}从合伙人删除`"
+      @confirm="onConfirmDel"
+    ></uv-modal>
   </view>
 </template>
 <script setup>
 import { onMounted, reactive, ref } from "vue";
-import { myVenue } from "@/config/api.js";
+import { myVenue, delPartner } from "@/config/api.js";
 onMounted(() => {
   getListData();
 });
+const createList = ref([]);
+const partnerList = ref([]);
 
 const getListData = async () => {
   const res = await myVenue();
   createList.value = res.venues || [];
+  partnerList.value = res.partnerList || [];
 };
-
-const createList = ref([]);
+// const getPartnerData = async () => {
+//   const res = await getPartnerList({venue_id:});
+//   partnerList.value = res.data || [];
+// };
 
 const onAdd = () => {
   uni.navigateTo({
@@ -113,48 +86,36 @@ const onAdd = () => {
   });
 };
 
-const rules = reactive({
-  name: {
-    type: "string",
-    required: true,
-    message: "请填写微信名",
-    trigger: ["blur", "change"],
-  },
-});
-
-const partnerModal = ref();
-const partnerFormEl = ref();
-const partnerForm = reactive({
-  name: "",
-});
-const currentItem = ref({});
 // 合伙人管理
-const onUpdatePartner = (item) => {
-  partnerModal.value.open();
-  currentItem.value = item;
+const onClickPartner = (item) => {
+  uni.navigateTo({
+    url: `/pages/addPartner/index?venueId=${item.VenueId}`,
+    events: {
+      confirm: function () {
+        getListData();
+      },
+    },
+  });
 };
 // 跳转详情
 const onToPage = (item) => {
   uni.navigateTo({
-    url: "/pages/venueDetail/index",
+    url: `/pages/venueDetail/index?venueId=${item.VenueId}`,
   });
 };
-const onCancelPartner = () => {
-  partnerModal.value.close();
+
+const delName = ref("");
+const modal = ref();
+const onDelPartner = async (item, partnerItem) => {
+  modal.value.open();
 };
-const onAddPartner = async () => {
-  const res = await partnerFormEl.value.validate();
-  uni.showToast({
-    icon: "success",
-    title: "添加成功",
-  });
-};
-const onDelPartner = async () => {
-  const res = await partnerFormEl.value.validate();
+const onConfirmDel = async () => {
+  await delPartner({ venue_id: item.venueId, user_id: partnerItem.userId });
   uni.showToast({
     icon: "success",
     title: "删除成功",
   });
+  getListData();
 };
 </script>
 <style lang="scss" scoped>
@@ -217,5 +178,14 @@ const onDelPartner = async () => {
 .person {
   color: #333333;
   margin-bottom: 4px;
+}
+.avatar {
+  margin-right: 10px;
+  position: relative;
+}
+.deleteIcon {
+  position: absolute;
+  top: 0;
+  right: -10px;
 }
 </style>
