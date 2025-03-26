@@ -174,7 +174,7 @@ const onAdd = () => {
 const hasSignIn = ref(false);
 
 const getSignInStatus = async () => {
-  const today = new Date().toLocaleDateString;
+  const today = new Date().toLocaleDateString().replaceAll("/", "-");
   const res = await dailySignIn({ date: today });
   // 场馆id在日签到的所有场馆中，表示已经签到过了
   hasSignIn.value = res.data.some((item) => item.venue_id === venueId.value);

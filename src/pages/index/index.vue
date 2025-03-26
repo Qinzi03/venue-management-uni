@@ -9,30 +9,34 @@
       <text class="tip"> 您还没有登录，请点击下方【我的】进行登录使用 </text>
     </view>
     <view class="content" v-else>
+      <view class="search">
+        <uv-search
+          placeholder="搜索场馆"
+          disabled
+          searchIconColor="#9fdfca"
+          color="#9fdfca"
+          placeholderColor="#9fdfca"
+          :showAction="false"
+          @click="onPageSeach"
+        ></uv-search>
+      </view>
       <view class="calendars">
         <uv-calendars
           insert
           :selected="onRemarkDate"
           :showMonth="false"
+          color="#9fdfca"
           @change="change"
         ></uv-calendars>
       </view>
 
-      <view class="search">
-        <uv-search
-          placeholder="搜索场馆"
-          disabled
-          :showAction="false"
-          @click="onPageSeach"
-        ></uv-search>
-      </view>
       <view class="list">
         <view class="title">
           <text>最近常去的场馆：</text>
         </view>
         <view
-          v-if="frequantList && frequantList.length"
-          v-for="(item, index) in frequantList"
+          v-if="frequantListSort && frequantListSort.length"
+          v-for="(item, index) in frequantListSort"
           :key="index"
         >
           <uv-cell
@@ -40,6 +44,7 @@
             value="去打卡"
             isLink
             @click="onPage"
+            :title-class="`${item.dailySignInFlag ? 'remarkColor' : ''}`"
             :label="`${item.count}次`"
           ></uv-cell>
         </view>
@@ -57,8 +62,8 @@
 </template>
 
 <script setup>
-import { ref, reactive } from "vue";
-import { getVisitedVenue, getSignInDate } from "@/config/api.js";
+import { ref, reactive, computed } from "vue";
+import { getVisitedVenue, getSignInDate, dailySignIn } from "@/config/api.js";
 import { onShow } from "@dcloudio/uni-app";
 // 定义个人信息数据
 const personalInfo = reactive({
@@ -85,14 +90,24 @@ const onRemarkDate = ref([
 const getDateInfo = async () => {
   const res = await getSignInDate();
   onRemarkDate.value = res.data.map((item) => {
-    return { date: item, badge: true };
+    return { date: item, info: "打卡", infoColor: "#5a7f73", badge: true };
   });
   console.log("----getDateInfo", res.data, onRemarkDate.value);
 };
-const change = (res) => {
+const dailySignInList = ref([]);
+const today = new Date().toLocaleDateString("zh").replaceAll("/", "-");
+const clickDate = ref(today);
+const change = async (res) => {
   console.log(res);
+  clickDate.value = res.fulldate;
+  getListinDaily();
 };
-
+// 获取点击日期下的签到场馆
+const getListinDaily = async () => {
+  const res = await dailySignIn({ date: clickDate.value });
+  dailySignInList.value = res.data;
+};
+getListinDaily();
 const frequantList = ref([
   // {
   //   name: "场馆1",
@@ -110,8 +125,20 @@ const frequantList = ref([
 
 const getVisitedData = async () => {
   const res = await getVisitedVenue();
-  frequantList.value = res.data;
+  frequantList.value = res.data || [];
 };
+
+const frequantListSort = computed(() => {
+  frequantList.value.forEach((item) => {
+    item.dailySignInFlag = dailySignInList.value.includes(item.name) ? 1 : 0;
+  });
+  return frequantList.value.sort(
+    (a, b) =>
+      dailySignInList.value.includes(a.dailySignInFlag) -
+      dailySignInList.value.includes(b.dailySignInFlag)
+  );
+});
+
 // 去打卡
 const onPage = () => {
   uni.navigateTo({
@@ -177,49 +204,81 @@ onShow(() => {
   justify-content: space-between;
   align-items: center;
 }
+.uv-calendar-item--disable {
+  display: none !important;
+}
+// .uv-calendar-item__weeks-box-text:has(+ .uv-calendar-item__weeks-lunar-text) {
+//   color: #9fdfca !important;
+// }
+// .uv-calendar-item__weeks-box-item:has(.uv-calendar-item__weeks-lunar-text) {
+//   border-radius: 40px;
+//   border: 2px solid #fff;
+// }
 .uv-calendar-item__weeks-box-item {
   height: 40px !important;
-  width: 36px !important;
+  width: 40px !important;
 }
 .uv-calendar-item--isDay {
   background-color: transparent !important;
-  color: #1989fa !important;
+  color: #5a7f73 !important;
 
   .uv-calendar-item__weeks-box-item {
-    background-color: transparent !important;
-    border-radius: 4px;
+    background-color: #fff !important;
+    border-radius: 40px;
   }
+}
+.uv-calendar-item--isDay-text {
+  color: #5a7f73 !important;
 }
 .calendar-item--uv-calendar-item--checked {
   background-color: transparent !important;
-  color: #1989fa !important;
+  color: #5a7f73 !important;
+  .uv-calendar-item__weeks-box-item {
+    background-color: #fff !important;
+    border-radius: 40px;
+  }
 }
 .uv-calendar__header {
-  background-color: #54a9fe;
+  background-color: #8bc4b1;
+  border-bottom-width: 0px !important;
+  .uv-calendar__header-btn {
+    border-top-color: #fff !important;
+    border-left-color: #fff !important;
+  }
+  .uv-calendar__header-text {
+    color: #fff !important;
+  }
 }
-.uv-calendar__header-btn {
-  border-top-color: #fff !important;
-  border-left-color: #fff !important;
+.uv-calendar__weeks-day {
+  display: none !important;
 }
-.uv-calendar__header-text {
-  color: #fff !important;
+.uv-calendar__weeks-day {
+  border-bottom-width: 0px !important;
 }
+.uv-calendar__box {
+  background-color: #9fdfca;
+}
+
 .uv-calendar-item__weeks-box-circle {
-  background-image: url("https://c-ssl.duitang.com/uploads/blog/202009/04/20200904121217_uWL5A.jpeg");
-  background-size: 50%;
-  background-repeat: no-repeat;
-  right: -20px !important;
-  width: 30px !important;
-  height: 30px !important;
-  background-color: transparent !important;
+  background-color: #f56c6c !important;
+  right: 0px !important;
+}
+.uv-calendar-item__weeks-lunar-text {
+  color: #5a7f73 !important;
 }
 .calendars {
-  height: 50vh;
+  height: 300px;
 }
 .search {
   padding: 10px 16px;
+  // background-color: #37a07e;
+  // margin-bottom: 10px;
 }
 .empty {
   margin-top: 20px;
+}
+.remarkColor {
+  color: #9fdfca !important;
+  font-weight: bold;
 }
 </style>
