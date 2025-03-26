@@ -48,7 +48,12 @@
     </uv-form>
     <view class="formFooter">
       <view class="footerBtn">
-        <uv-button type="primary" text="提交" @click="onSubmit"></uv-button>
+        <uv-button
+          type="primary"
+          color="#9fdfca"
+          text="提交"
+          @click="onSubmit"
+        ></uv-button>
       </view>
     </view>
   </view>

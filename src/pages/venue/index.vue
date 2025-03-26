@@ -6,10 +6,10 @@
       :itemStyle="{ height: '50px' }"
     >
       <view class="cardContent">
-        <view class="cardList" v-for="item in createList" :key="item.id">
-          <view class="row" @click="onToPage">
-            <view class="title">{{ item.Name }}</view>
-            <view class="value">打卡人数：{{ item.onLineNum || 0 }}人</view>
+        <view class="cardList" v-for="item in createList" :key="item.venue_id">
+          <view class="row" @click="onToPage(item)">
+            <view class="title">{{ item.venue_name }}</view>
+            <view class="value">打卡人数：{{ item.sign_in_count || 0 }}人</view>
           </view>
 
           <view class="marginT20">
@@ -72,8 +72,8 @@ const partnerList = ref([]);
 
 const getListData = async () => {
   const res = await myVenue();
-  createList.value = res.venues || [];
-  partnerList.value = res.partnerList || [];
+  createList.value = res.data || [];
+  partnerList.value = res.data.partner_list || [];
 };
 // const getPartnerData = async () => {
 //   const res = await getPartnerList({venue_id:});
@@ -89,7 +89,7 @@ const onAdd = () => {
 // 合伙人管理
 const onClickPartner = (item) => {
   uni.navigateTo({
-    url: `/pages/addPartner/index?venueId=${item.VenueId}`,
+    url: `/pages/addPartner/index?venueId=${item.venue_id}`,
     events: {
       confirm: function () {
         getListData();
@@ -100,7 +100,7 @@ const onClickPartner = (item) => {
 // 跳转详情
 const onToPage = (item) => {
   uni.navigateTo({
-    url: `/pages/venueDetail/index?venueId=${item.VenueId}`,
+    url: `/pages/venueDetail/index?id=${item.venue_id}`,
   });
 };
 
@@ -110,7 +110,7 @@ const onDelPartner = async (item, partnerItem) => {
   modal.value.open();
 };
 const onConfirmDel = async () => {
-  await delPartner({ venue_id: item.venueId, user_id: partnerItem.userId });
+  await delPartner({ venue_id: item.venue_id, user_id: partnerItem.userId });
   uni.showToast({
     icon: "success",
     title: "删除成功",
@@ -129,7 +129,7 @@ const onConfirmDel = async () => {
   width: 40px;
   height: 40px;
   border-radius: 60px;
-  background-color: #1989fa;
+  background-color: $uni-color-primary;
   bottom: 120px;
   right: 30px;
   display: flex;

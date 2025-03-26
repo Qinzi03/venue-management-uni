@@ -21,7 +21,8 @@ export function http(path, params = {}, method = "POST", loading = true) {
 
         console.log("响应拦截：", path, res, params, res.data);
         // 70000表示登录过期
-        if (res.data?.code === 70000) {
+        //  uni.getStorageSync("userId") 通过判断来防止重复请求跳转登录
+        if (res.data?.code === 70000 && uni.getStorageSync("userInfo")) {
           uni.showToast({
             icon: "error",
             duration: 2000,

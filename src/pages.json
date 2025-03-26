@@ -41,6 +41,12 @@
 			"style": {
 				"navigationBarTitleText": "搜索页"
 			}
+		},
+		{
+			"path": "pages/addPartner/index",
+			"style": {
+				"navigationBarTitleText": "添加合伙人"
+			}
 		}
 	],
 	"entryPagePath":"pages/index/index",

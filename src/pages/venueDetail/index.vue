@@ -26,12 +26,7 @@
               :key="index"
               class="flex notice textColor"
             >
-              <view class="flex"
-                >通知：
-                <view>
-                  {{ item }}
-                </view></view
-              >
+              <uv-notice-bar :text="item"></uv-notice-bar>
 
               <view><uv-icon name="close-circle"></uv-icon></view>
             </view>
@@ -40,6 +35,7 @@
                 <uv-button
                   text="发布通知"
                   type="primary"
+                  color="#9fdfca"
                   size="small"
                   @click="onPublish"
                 ></uv-button>
@@ -74,17 +70,23 @@
             <uv-button
               v-if="!hasSignIn"
               text="打卡"
+              color="#9fdfca"
               size="small"
               @click="onClockInSingle(item.id)"
             ></uv-button>
           </view>
           <view class="marginR20">
-            <uv-button text="删除" size="small" @click="onDelTable"></uv-button>
+            <uv-button
+              text="删除"
+              size="small"
+              @click="onDelTable(item)"
+            ></uv-button>
           </view>
           <view class="marginR20">
             <uv-button
               :text="`${item.status ? '开机' : '关机'}`"
               type="primary"
+              color="#9fdfca"
               size="small"
               @click="onChangeTableStatus"
             ></uv-button>
@@ -96,10 +98,18 @@
         @click="onAdd"
         class="add"
         type="primary"
+        color="#9fdfca"
         text="增加桌子"
       ></uv-button>
 
-      <uv-modal ref="publishModal" title="发布公告" @confirm="onConfirmPub">
+      <uv-modal
+        ref="publishModal"
+        title="发布公告"
+        :showCancelButton="true"
+        :asyncClose="true"
+        @confirm="onConfirmPub"
+        @cancel="onCancelPub"
+      >
         <view class="slot-content">
           <uv-textarea v-model="notice" placeholder="请输入内容"></uv-textarea>
         </view>
@@ -114,6 +124,8 @@ import {
   signIn,
   dailySignIn,
   publishNotice,
+  addTable,
+  delTable,
 } from "@/config/api.js";
 import { onLoad } from "@dcloudio/uni-app";
 let detailForm = reactive({
@@ -129,6 +141,7 @@ const onClockInSingle = async (id) => {
     duration: 2000,
     title: "打卡成功！",
   });
+  getSignInStatus();
 };
 
 const notice = ref("");
@@ -137,14 +150,31 @@ const onPublish = () => {
   publishModal.value.open();
 };
 
-const onConfirmPub = () => {
+const onConfirmPub = async () => {
+  console.log("----onConfirmPub", notice.value);
   if (!notice.value) {
-    uni.showToast("请先输入公告内容！");
+    uni.showToast({
+      icon: "error",
+      duration: 2000,
+      title: "请先输入公告内容！",
+    });
+    publishModal.value.closeLoading();
     return;
   }
-  publishNotice({ venue_id: venueId.value, notice: notice.value });
+  try {
+    await publishNotice({ venue_id: venueId.value, notice: notice.value });
+  } finally {
+    publishModal.value.closeLoading();
+    publishModal.value.close();
+  }
 };
-const onDelTable = () => {};
+
+const onCancelPub = () => {};
+const onDelTable = async (item) => {
+  await delTable({ table_id: item.id });
+
+  getDetailsInfo(venueId.value);
+};
 const onChangeTableStatus = () => {};
 
 const list = ref([]);
@@ -163,18 +193,22 @@ const getDetailsInfo = async (id) => {
     };
   });
 };
-const onAdd = () => {
-  list.value.push({
-    id: Math.random(),
-    status: 0,
-    statusStr: "未开始",
-  });
+const onAdd = async () => {
+  await addTable({ venue_id: venueId.value });
+
+  getDetailsInfo(venueId.value);
 };
 
 const hasSignIn = ref(false);
 
 const getSignInStatus = async () => {
-  const today = new Date().toLocaleDateString().replaceAll("/", "-");
+  const today = new Date()
+    .toLocaleDateString("zh", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    })
+    .replaceAll("/", "-");
   const res = await dailySignIn({ date: today });
   // 场馆id在日签到的所有场馆中，表示已经签到过了
   hasSignIn.value = res.data.some((item) => item.venue_id === venueId.value);
@@ -184,6 +218,7 @@ onLoad((option) => {
   console.log(option);
   venueId.value = option.id;
   getDetailsInfo(option.id);
+  getSignInStatus();
 });
 
 // 跳转人员详情
@@ -226,5 +261,8 @@ const onToPage = (item) => {
 }
 .marginR {
   margin-right: 8px;
+}
+.slot-content {
+  width: 240px;
 }
 </style>

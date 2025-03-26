@@ -12,7 +12,7 @@
           <view
             class="listItem"
             @click="onPage(item)"
-            v-html="item.Name"
+            v-html="item.NameNode"
           ></view>
         </uv-list-item>
       </uv-list>
@@ -25,28 +25,40 @@ import { onMounted, ref } from "vue";
 import { getAllVenue } from "@/config/api.js";
 
 const list = ref([]);
+const allList = ref([]);
 const getListData = async () => {
   const res = await getAllVenue();
-  list.value = res.venues;
+  list.value = res.venues.map((item) => {
+    item.NameNode = item.Name;
+    return item;
+  });
+  allList.value = res.venues;
 };
 const keyword = ref("");
-const onInput = () => {
-  changeColor(list.value);
+const onInput = (keyword) => {
+  changeColor();
 };
 
-const changeColor = (resultsList) => {
-  resultsList.map((item, index) => {
-    if (keyword.value) {
-      // 匹配关键字正则
-      let replaceReg = new RegExp(keyword.value, "g");
-      // 高亮替换v-html值
-      let replaceString =
-        "<font style='color:#1042df'>" + keyword.value + "</font>";
-      if (resultsList[index].Name) {
-        resultsList[index].Name = item.Name.replace(replaceReg, replaceString);
+const changeColor = () => {
+  const resultsList = allList.value
+    .filter((item) => {
+      return item.Name.includes(keyword.value);
+    })
+    .map((item, index) => {
+      if (keyword.value) {
+        // 匹配关键字正则
+        let replaceReg = new RegExp(keyword.value, "g");
+        // 高亮替换v-html值
+        let replaceString =
+          "<font style='color:#f56c6c'>" + keyword.value + "</font>";
+        if (item.Name) {
+          item.NameNode = item.Name.replace(replaceReg, replaceString);
+        }
+      } else {
+        item.NameNode = item.Name;
       }
-    }
-  });
+      return item;
+    });
   list.value = resultsList;
 };
 // 去打卡

@@ -14,7 +14,7 @@
           placeholder="搜索场馆"
           disabled
           searchIconColor="#9fdfca"
-          color="#9fdfca"
+          borderColor="#9fdfca"
           placeholderColor="#9fdfca"
           :showAction="false"
           @click="onPageSeach"
@@ -43,7 +43,7 @@
             :title="item.name"
             value="去打卡"
             isLink
-            @click="onPage"
+            @click="onPage(item)"
             :title-class="`${item.dailySignInFlag ? 'remarkColor' : ''}`"
             :label="`${item.count}次`"
           ></uv-cell>
@@ -95,7 +95,13 @@ const getDateInfo = async () => {
   console.log("----getDateInfo", res.data, onRemarkDate.value);
 };
 const dailySignInList = ref([]);
-const today = new Date().toLocaleDateString("zh").replaceAll("/", "-");
+const today = new Date()
+  .toLocaleDateString("zh", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  })
+  .replaceAll("/", "-");
 const clickDate = ref(today);
 const change = async (res) => {
   console.log(res);
@@ -105,7 +111,7 @@ const change = async (res) => {
 // 获取点击日期下的签到场馆
 const getListinDaily = async () => {
   const res = await dailySignIn({ date: clickDate.value });
-  dailySignInList.value = res.data;
+  dailySignInList.value = res.data || [];
 };
 getListinDaily();
 const frequantList = ref([
@@ -140,9 +146,9 @@ const frequantListSort = computed(() => {
 });
 
 // 去打卡
-const onPage = () => {
+const onPage = (item) => {
   uni.navigateTo({
-    url: "/pages/venueDetail/index",
+    url: `/pages/venueDetail/index?id=${item.venue_id}`,
   });
 };
 
@@ -241,6 +247,8 @@ onShow(() => {
 .uv-calendar__header {
   background-color: #8bc4b1;
   border-bottom-width: 0px !important;
+  border-radius: 10px 10px 0 0;
+  height: 40px !important;
   .uv-calendar__header-btn {
     border-top-color: #fff !important;
     border-left-color: #fff !important;
@@ -257,6 +265,8 @@ onShow(() => {
 }
 .uv-calendar__box {
   background-color: #9fdfca;
+
+  border-radius: 0 0 10px 10px;
 }
 
 .uv-calendar-item__weeks-box-circle {
@@ -268,6 +278,7 @@ onShow(() => {
 }
 .calendars {
   height: 300px;
+  padding: 0 10px;
 }
 .search {
   padding: 10px 16px;

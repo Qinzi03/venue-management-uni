@@ -53,5 +53,13 @@ export const dailySignIn = (params) => {
 };
 // 发布公告
 export const publishNotice = (params) => {
-  return http(`/auth/venue/notice`, params, "GET");
+  return http(`/auth/venue/notice`, params, "POST");
+};
+// 增加桌子
+export const addTable = (params) => {
+  return http(`/auth/table/add`, params, "POST");
+};
+// 删除桌子
+export const delTable = (params) => {
+  return http(`/auth/table/del`, params, "POST");
 };

@@ -62,7 +62,7 @@ const onConfirm = async () => {
 };
 
 onLoad((option) => {
-  venueId = option.venueId;
+  venueId.value = option.venueId;
 });
 </script>
 
