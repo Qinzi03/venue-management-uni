@@ -29,7 +29,7 @@ export function http(path, params = {}, method = "POST", loading = true) {
             title: "您的登录已过期，请重新登陆",
           });
           uni.clearStorageSync();
-          uni.navigateTo({ url: "/pages/person/index" });
+          uni.switchTab({ url: "/pages/person/index" });
           reject(res.data);
           return;
         }

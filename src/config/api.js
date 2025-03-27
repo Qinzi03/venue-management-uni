@@ -19,6 +19,10 @@ export const getAllVenue = (params) => {
 export const getDetailsVenue = (id) => {
   return http(`/auth/venue/detail/${id}`, {}, "GET");
 };
+// 获取场馆详情下桌子列表
+export const getDetailsTableVenue = (id) => {
+  return http(`/auth/venue/tables`, { venue_id: id }, "GET");
+};
 // 我去过的场馆
 export const getVisitedVenue = () => {
   return http(`/auth/venue/frequently_visited`, {}, "GET");
@@ -54,6 +58,10 @@ export const dailySignIn = (params) => {
 // 发布公告
 export const publishNotice = (params) => {
   return http(`/auth/venue/notice`, params, "POST");
+};
+// 删除公告
+export const delNotice = (params) => {
+  return http(`/auth/venue/notice`, params, "DELETE");
 };
 // 增加桌子
 export const addTable = (params) => {

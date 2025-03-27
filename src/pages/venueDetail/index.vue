@@ -21,14 +21,12 @@
               </view>
               {{ detailForm.phone }}</view
             >
-            <view
-              v-for="(item, index) in detailForm.notifies"
-              :key="index"
-              class="flex notice textColor"
-            >
-              <uv-notice-bar :text="item"></uv-notice-bar>
+            <view v-if="detailForm.Notice" class="flex notice textColor">
+              <uv-notice-bar :text="detailForm.Notice"></uv-notice-bar>
 
-              <view><uv-icon name="close-circle"></uv-icon></view>
+              <view class="delNoticeIcon" @click="onCancelPub"
+                ><uv-icon name="close-circle" color="#f9ae3d"></uv-icon
+              ></view>
             </view>
             <view class="flex-end marginT40">
               <view class="marginR20">
@@ -121,18 +119,20 @@
 import { reactive, ref } from "vue";
 import {
   getDetailsVenue,
+  getDetailsTableVenue,
   signIn,
   dailySignIn,
   publishNotice,
   addTable,
   delTable,
+  delNotice,
 } from "@/config/api.js";
 import { onLoad } from "@dcloudio/uni-app";
 let detailForm = reactive({
   name: "",
   address: "",
   phone: "",
-  notifies: [],
+  Notice: "",
 });
 const venueId = ref("");
 const onClockInSingle = async (id) => {
@@ -151,7 +151,6 @@ const onPublish = () => {
 };
 
 const onConfirmPub = async () => {
-  console.log("----onConfirmPub", notice.value);
   if (!notice.value) {
     uni.showToast({
       icon: "error",
@@ -163,40 +162,53 @@ const onConfirmPub = async () => {
   }
   try {
     await publishNotice({ venue_id: venueId.value, notice: notice.value });
+
+    getDetailsInfo(venueId.value);
   } finally {
     publishModal.value.closeLoading();
     publishModal.value.close();
   }
 };
 
-const onCancelPub = () => {};
+const onCancelPub = async () => {
+  await delNotice({ venue_id: venueId.value });
+  getDetailsInfo(venueId.value);
+};
 const onDelTable = async (item) => {
   await delTable({ table_id: item.id });
 
-  getDetailsInfo(venueId.value);
+  getTableDetail(venueId.value);
 };
 const onChangeTableStatus = () => {};
 
 const list = ref([]);
 
+// 场馆详情
 const getDetailsInfo = async (id) => {
   const res = await getDetailsVenue(id);
-  detailForm.name = res.venue.Name;
-  detailForm.address = res.venue.Location;
-  detailForm.phone = res.venue.Contact;
-  detailForm.notifies = res.venue.notifies;
-  list.value = res.tables.map((item) => {
-    return {
-      id: item.ID,
-      status: item.Status,
-      statusStr: item.Status ? "使用中" : "未开始",
-    };
-  });
+  detailForm.name = res.data.Name;
+  detailForm.address = res.data.Location;
+  detailForm.phone = res.data.Contact;
+  detailForm.Notice = res.data.Notice;
+};
+
+// 桌子详情
+const getTableDetail = async (id) => {
+  const res = await getDetailsTableVenue(id);
+  list.value =
+    res.data &&
+    res.data.map((item) => {
+      return {
+        id: item.ID,
+        status: item.Status,
+        statusStr: item.Status ? "使用中" : "未开始",
+      };
+    });
 };
 const onAdd = async () => {
   await addTable({ venue_id: venueId.value });
 
-  getDetailsInfo(venueId.value);
+  getTableDetail(venueId.value);
 };
 
 const hasSignIn = ref(false);
@@ -211,13 +223,18 @@ const getSignInStatus = async () => {
     .replaceAll("/", "-");
   const res = await dailySignIn({ date: today });
   // 场馆id在日签到的所有场馆中，表示已经签到过了
-  hasSignIn.value = res.data.some((item) => item.venue_id === venueId.value);
+  hasSignIn.value =
+    (res &&
+      res.data &&
+      res.data.some((item) => item.venue_id === venueId.value)) ||
+    false;
 };
 
 onLoad((option) => {
   console.log(option);
   venueId.value = option.id;
-  getDetailsInfo(option.id);
+  getDetailsInfo(venueId.value);
+  getTableDetail(venueId.value);
   getSignInStatus();
 });
 
@@ -252,6 +269,10 @@ const onToPage = (item) => {
 }
 .notice {
   margin-top: 8px;
+  .delNoticeIcon {
+    position: relative;
+    top: -16px;
+  }
 }
 .add {
   margin-top: 20px;

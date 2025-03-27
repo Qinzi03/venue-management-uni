@@ -1,85 +1,96 @@
 <template>
   <view class="page">
-    <uv-list
-      v-if="createList.length"
-      class="marginT20"
-      :itemStyle="{ height: '50px' }"
-    >
-      <view class="cardContent">
-        <view class="cardList" v-for="item in createList" :key="item.venue_id">
-          <view class="row" @click="onToPage(item)">
-            <view class="title">{{ item.venue_name }}</view>
-            <view class="value">打卡人数：{{ item.sign_in_count || 0 }}人</view>
-          </view>
-
-          <view class="marginT20">
-            <!-- <view class="person">场馆合伙人：</view> -->
-
-            <view class="row marginT20">
-              <view
-                class="avatar"
-                v-for="partnerItem in partnerList"
-                :key="item.id"
+    <ve-login @changeStatus="onChangeLoginStatus"></ve-login>
+    <view v-if="loginStatus">
+      <uv-list
+        v-if="createList.length"
+        class="marginT20"
+        :itemStyle="{ height: '50px' }"
+      >
+        <view class="cardContent">
+          <view
+            class="cardList"
+            v-for="item in createList"
+            :key="item.venue_id"
+          >
+            <view class="row" @click="onToPage(item)">
+              <view class="title">{{ item.venue_name }}</view>
+              <view class="value"
+                >打卡人数：{{ item.sign_in_count || 0 }}人</view
               >
-                <uv-avatar
-                  src="https://via.placeholder.com/200x200.png/2878ff"
-                  text="北"
-                  fontSize="18"
-                  randomBgColor
-                ></uv-avatar>
-                <view
-                  class="deleteIcon"
-                  @click="onDelPartner(item, partnerItem)"
-                >
-                  <uv-icon name="close-circle"></uv-icon>
-                </view>
-              </view>
+            </view>
 
-              <view class="flex" @click.stop="onClickPartner(item)">
-                <uv-icon name="plus"></uv-icon>增加合伙人
+            <view class="marginT20">
+              <!-- <view class="person">场馆合伙人：</view> -->
+
+              <view class="row marginT20">
+                <view
+                  class="avatar"
+                  v-for="partnerItem in item.partner_list"
+                  :key="item.user_id"
+                >
+                  <uv-avatar
+                    :text="getTextAvatar(partnerItem)"
+                    fontSize="18"
+                    randomBgColor
+                  ></uv-avatar>
+                  <view
+                    class="deleteIcon"
+                    @click="onDelPartner(item, partnerItem)"
+                  >
+                    <uv-icon name="close-circle" color="#9fdfca"></uv-icon>
+                  </view>
+                </view>
+
+                <view class="flex" @click.stop="onClickPartner(item)">
+                  <uv-icon name="plus"></uv-icon>增加合伙人
+                </view>
               </view>
             </view>
           </view>
         </view>
+      </uv-list>
+      <view class="empty" v-else>
+        <uv-empty
+          mode="list"
+          icon="https://tse3-mm.cn.bing.net/th/id/OIP-C.A6sNosOAiGe9IDUlLVETvAHaHa?rs=1&pid=ImgDetMain"
+          text="您还没有创建的场馆，请点击右下角进行创建"
+        ></uv-empty>
       </view>
-    </uv-list>
-    <view class="empty" v-else>
-      <uv-empty
-        mode="list"
-        icon="https://tse3-mm.cn.bing.net/th/id/OIP-C.A6sNosOAiGe9IDUlLVETvAHaHa?rs=1&pid=ImgDetMain"
-        text="您还没有创建的场馆，请点击右下角进行创建"
-      ></uv-empty>
+      <view class="add" @click="onAdd"> 创建场馆 </view>
     </view>
-    <view class="add" @click="onAdd"> 创建场馆 </view>
-    <ve-footer tabName="venue"> </ve-footer>
 
     <uv-modal
       ref="modal"
       title="删除合伙人"
-      :content="`确定将${delName}从合伙人删除`"
+      :showCancelButton="true"
+      :asyncClose="true"
+      :content="`确定将${clickPartner.nick_name}从合伙人删除`"
       @confirm="onConfirmDel"
+      @cancel="onCancelDel"
     ></uv-modal>
   </view>
 </template>
 <script setup>
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, ref } from "vue";
 import { myVenue, delPartner } from "@/config/api.js";
+import { loginStatus, onChangeLoginStatus } from "@/utils/util.js";
 onMounted(() => {
   getListData();
 });
-const createList = ref([]);
-const partnerList = ref([]);
 
+const createList = ref([]);
 const getListData = async () => {
   const res = await myVenue();
   createList.value = res.data || [];
-  partnerList.value = res.data.partner_list || [];
 };
-// const getPartnerData = async () => {
-//   const res = await getPartnerList({venue_id:});
-//   partnerList.value = res.data || [];
-// };
 
+const getTextAvatar = (partnerItem) => {
+  if (partnerItem.nick_name) {
+    return partnerItem.nick_name.slice(0, 2);
+  }
+  return "名称";
+};
 const onAdd = () => {
   uni.navigateTo({
     url: `/pages/createVenue/index`,
@@ -104,18 +115,32 @@ const onToPage = (item) => {
   });
 };
 
-const delName = ref("");
 const modal = ref();
+const clickPartner = ref({});
 const onDelPartner = async (item, partnerItem) => {
   modal.value.open();
+  clickPartner.value = { ...item, ...partnerItem };
 };
 const onConfirmDel = async () => {
-  await delPartner({ venue_id: item.venue_id, user_id: partnerItem.userId });
-  uni.showToast({
-    icon: "success",
-    title: "删除成功",
-  });
+  try {
+    await delPartner({
+      venue_id: clickPartner.value.venue_id,
+      user_id: clickPartner.value.user_id,
+    });
+    uni.showToast({
+      icon: "success",
+      title: "删除成功",
+    });
+  } finally {
+    modal.value.closeLoading();
+    modal.value.close();
+  }
+
   getListData();
+};
+
+const onCancelDel = () => {
+  modal.value.close();
 };
 </script>
 <style lang="scss" scoped>

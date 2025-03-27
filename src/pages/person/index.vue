@@ -55,7 +55,6 @@
       </view>
     </view>
   </view>
-  <ve-footer tabName="person"></ve-footer>
 </template>
 
 <script setup>

@@ -1,14 +1,7 @@
 <template>
   <view class="page">
-    <image
-      v-if="!personalInfo.nickName"
-      class="logo"
-      src="/static/logo.png"
-    ></image>
-    <view v-if="!personalInfo.nickName" class="text-area">
-      <text class="tip"> 您还没有登录，请点击下方【我的】进行登录使用 </text>
-    </view>
-    <view class="content" v-else>
+    <ve-login @changeStatus="onChangeLoginStatus"></ve-login>
+    <view v-if="loginStatus" class="content">
       <view class="search">
         <uv-search
           placeholder="搜索场馆"
@@ -57,31 +50,14 @@
         </view>
       </view>
     </view>
-    <ve-footer tabName="index"></ve-footer>
   </view>
 </template>
 
 <script setup>
-import { ref, reactive, computed } from "vue";
+import { ref, computed } from "vue";
 import { getVisitedVenue, getSignInDate, dailySignIn } from "@/config/api.js";
 import { onShow } from "@dcloudio/uni-app";
-// 定义个人信息数据
-const personalInfo = reactive({
-  nickName: "",
-  phoneNum: "",
-});
-
-// 检查用户是否已登录
-const checkLoginStatus = () => {
-  const userInfo = uni.getStorageSync("userInfo");
-  if (userInfo) {
-    personalInfo.nickName = userInfo.nickName;
-    personalInfo.phoneNum = userInfo.phoneNum;
-  }
-};
-
-// 页面加载时检查登录状态
-checkLoginStatus();
+import { loginStatus, onChangeLoginStatus } from "@/utils/util.js";
 const onRemarkDate = ref([
   // { date: `2025-03-02`, info: "打卡", badge: true, infoColor: "#1989fa" },
   // { date: `2025-03-06`, info: "打卡", infoColor: "#1989fa", badge: true },
@@ -177,25 +153,6 @@ onShow(() => {
   padding-bottom: 40px;
 }
 
-.logo {
-  height: 200rpx;
-  width: 200rpx;
-  margin-top: 200rpx;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 50rpx;
-}
-
-.text-area {
-  display: flex;
-  justify-content: center;
-}
-
-.tip {
-  font-size: 28rpx;
-  color: #8f8f94;
-}
-
 .list {
   width: 100%;
   margin-top: 20px;
@@ -213,13 +170,7 @@ onShow(() => {
 .uv-calendar-item--disable {
   display: none !important;
 }
-// .uv-calendar-item__weeks-box-text:has(+ .uv-calendar-item__weeks-lunar-text) {
-//   color: #9fdfca !important;
-// }
-// .uv-calendar-item__weeks-box-item:has(.uv-calendar-item__weeks-lunar-text) {
-//   border-radius: 40px;
-//   border: 2px solid #fff;
-// }
+
 .uv-calendar-item__weeks-box-item {
   height: 40px !important;
   width: 40px !important;
