@@ -25,12 +25,13 @@
 
       <view class="list">
         <view class="title">
-          <text>最近常去的场馆：</text>
+          <text>最近常去的场馆</text>
         </view>
         <view
           v-if="frequantListSort && frequantListSort.length"
           v-for="(item, index) in frequantListSort"
           :key="index"
+          class="listItem"
         >
           <uv-cell
             :title="item.name"
@@ -90,20 +91,7 @@ const getListinDaily = async () => {
   dailySignInList.value = res.data || [];
 };
 getListinDaily();
-const frequantList = ref([
-  // {
-  //   name: "场馆1",
-  //   count: 5,
-  // },
-  // {
-  //   name: "场馆2",
-  //   count: 3,
-  // },
-  // {
-  //   name: "场馆3",
-  //   count: 2,
-  // },
-]);
+const frequantList = ref([]);
 
 const getVisitedData = async () => {
   const res = await getVisitedVenue();
@@ -144,8 +132,8 @@ onShow(() => {
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  height: 100vh;
+  background-color: #f3f4f6;
 }
 
 .content {
@@ -157,9 +145,15 @@ onShow(() => {
   width: 100%;
   margin-top: 20px;
   .title {
-    font-size: 14px;
+    font-size: 16px;
     color: #333333;
     padding: 10px 20px;
+    font-weight: bold;
+  }
+  .listItem {
+    background-color: #fff;
+    margin: 10px;
+    border-radius: 10px;
   }
 }
 .flex {
@@ -228,13 +222,14 @@ onShow(() => {
   color: #5a7f73 !important;
 }
 .calendars {
-  height: 300px;
+  height: 280px;
   padding: 0 10px;
+  background-color: #fff;
+  border-radius: 0 0 10px 10px;
 }
 .search {
   padding: 10px 16px;
-  // background-color: #37a07e;
-  // margin-bottom: 10px;
+  background-color: #fff;
 }
 .empty {
   margin-top: 20px;

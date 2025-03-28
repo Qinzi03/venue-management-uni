@@ -154,6 +154,8 @@ const authorizeLogin = async (userInfo) => {
   background-image: url("https://fscdn.zto.com/GetPublicFile/clouddrive/PRO_396/person-bg.png");
   background-size: 100% 50%;
   background-repeat: no-repeat;
+  height: 100vh;
+  background-color: #f3f4f6;
 }
 .list-content {
   position: relative;
