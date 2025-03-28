@@ -66,9 +66,9 @@
 		}]
 	},
 	"globalStyle": {
-		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
-		"navigationBarBackgroundColor": "#F8F8F8",
+		"navigationBarTextStyle": "white",
+		"navigationBarTitleText": "场馆管理中心",
+		"navigationBarBackgroundColor": "#9fdfca",
 		"backgroundColor": "#F8F8F8"
 	},
 	"easycom": {

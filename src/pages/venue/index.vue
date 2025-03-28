@@ -38,7 +38,7 @@
                     class="deleteIcon"
                     @click="onDelPartner(item, partnerItem)"
                   >
-                    <uv-icon name="close-circle" color="#9fdfca"></uv-icon>
+                    <uv-icon name="close-circle"></uv-icon>
                   </view>
                 </view>
 
