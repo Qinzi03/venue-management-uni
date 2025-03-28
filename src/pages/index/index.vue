@@ -45,7 +45,6 @@
         <view class="empty" v-else>
           <uv-empty
             mode="order"
-            icon="https://tse3-mm.cn.bing.net/th/id/OIP-C.A6sNosOAiGe9IDUlLVETvAHaHa?rs=1&pid=ImgDetMain"
             text="您还没有前往过场馆，请点击上方搜索前往"
           ></uv-empty>
         </view>

@@ -53,7 +53,6 @@
       <view class="empty" v-else>
         <uv-empty
           mode="list"
-          icon="https://tse3-mm.cn.bing.net/th/id/OIP-C.A6sNosOAiGe9IDUlLVETvAHaHa?rs=1&pid=ImgDetMain"
           text="您还没有创建的场馆，请点击右下角进行创建"
         ></uv-empty>
       </view>
