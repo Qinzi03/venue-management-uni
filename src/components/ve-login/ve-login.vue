@@ -1,62 +1,106 @@
 <template>
-  <view v-if="!personalInfo.nickName" class="login">
-    <view class="logo" @click="onToPage">
-      <uv-icon
-        name="arrow-downward"
-        color="#9fdfca"
-        size="40"
-        labelColor="#8f8f94"
-        labelSize="12px"
-        labelPos="bottom"
-        label="您还没有登录，请点击下方【我的】进行登录使用"
-        space="16px"
-      ></uv-icon>
+  <uv-popup ref="popup" mode="bottom" round="8" @change="onChange">
+    <view class="title">请填写登录信息</view>
+    <view class="login">
+      <view class="loginImg">
+        <button
+          class="avatar-wrapper"
+          open-type="chooseAvatar"
+          @chooseavatar="onChooseAvatar"
+        >
+          <image class="avatar" :src="avatarUrl"></image>
+        </button>
+      </view>
+      <view class="loginInput">
+        <input
+          v-model="nickName"
+          type="nickname"
+          class="weui-input"
+          placeholder="请输入昵称"
+        />
+      </view>
     </view>
-  </view>
+    <uv-button type="primary" @click="onConfirm">提交</uv-button>
+  </uv-popup>
 </template>
-
 <script setup>
-import { reactive } from "vue";
-// 定义个人信息数据
-const personalInfo = reactive({
-  nickName: "",
-  phoneNum: "",
-});
+import { ref, defineEmits } from "vue";
 
-const emit = defineEmits(["changeStatus"]);
-// 检查用户是否已登录
-const checkLoginStatus = () => {
-  const userInfo = uni.getStorageSync("userInfo");
-  if (userInfo) {
-    personalInfo.nickName = userInfo.nickName;
-    personalInfo.phoneNum = userInfo.phoneNum;
+const defaultAvatarUrl =
+  "https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0";
+const avatarUrl = ref(defaultAvatarUrl);
+const nickName = ref("");
+const onChooseAvatar = (e) => {
+  avatarUrl.value = e.detail.avatarUrl;
+};
+
+const emit = defineEmits(["onSubmit"]);
+const onConfirm = () => {
+  console.log("avatarUrl", avatarUrl.value);
+  console.log("nickName", nickName.value);
+
+  if (!avatarUrl.value) {
+    uni.showToast({
+      title: "请选择头像",
+      icon: "none",
+    });
+    return;
   }
-  emit("changeStatus", !!userInfo);
+  if (!nickName.value) {
+    uni.showToast({
+      title: "请输入昵称",
+      icon: "none",
+    });
+    return;
+  }
+  emit("onSubmit", {
+    avatarUrl: avatarUrl.value,
+    nickName: nickName.value,
+  });
 };
 
-// 组件加载时检查登录状态
-checkLoginStatus();
-
-const onToPage = () => {
-  uni.switchTab({ url: "/pages/person/index" });
+const onChange = ({ show }) => {
+  if (show) {
+    uni.hideTabBar();
+    return;
+  }
+  uni.showTabBar();
 };
+const popup = ref();
+const open = () => {
+  popup.value.open();
+};
+const close = () => {
+  popup.value.close();
+};
+
+defineExpose({
+  open,
+  close,
+});
 </script>
-
 <style lang="scss" scoped>
 .login {
-  margin-top: 400rpx;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 50rpx;
-  text-align: center;
-}
-.text-area {
   display: flex;
+  flex-direction: column;
   justify-content: center;
-  font-size: 12px;
-  margin-top: 16px;
+  align-items: center;
+  padding: 30px 10px;
 }
-.logo {
+.avatar {
+  width: 80px;
+  height: 80px;
+}
+.loginInput {
+  width: 90%;
+  border: 1px solid #efefef;
+  margin: 20px;
+  padding: 10px;
+}
+.title {
+  font-size: 16px;
+  color: #333;
   text-align: center;
+  padding-top: 14px;
 }
 </style>

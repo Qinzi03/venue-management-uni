@@ -3,22 +3,17 @@
     <view class="list-content formContent">
       <view class="flex-start user-cell">
         <view>
-          <image
-            :src="
-              personalInfo.nickName
-                ? '/static/user-logo.png'
-                : '/static/user-logo-gray.png'
-            "
-            class="user-logo"
-          ></image>
+          <uv-avatar
+            :src="personalInfo.userImg || '/static/user-logo.png'"
+            size="60"
+          ></uv-avatar>
         </view>
         <view v-if="personalInfo.nickName">
           <view class="user">{{ personalInfo.nickName }}</view>
-          <view class="phone">{{ personalInfo.phoneNum }}</view>
         </view>
         <view v-else>
           <!-- 修改此处，点击触发授权登录 -->
-          <view class="user" @click="authorizeLogin">登录/注册</view>
+          <view class="user" @click="onToLogin">登录/注册</view>
         </view>
       </view>
       <view class="group-content">
@@ -54,54 +49,46 @@
         </uv-cell-group>
       </view>
     </view>
+
+    <ve-login ref="loginComp" @onSubmit="authorizeLogin"></ve-login>
   </view>
 </template>
 
 <script setup>
 import { ref, reactive } from "vue";
 import { login } from "@/config/api.js";
+import { onShow } from "@dcloudio/uni-app";
 
 // 定义个人信息数据
 const personalInfo = reactive({
   nickName: "",
-  phoneNum: "",
+  userImg: "/static/user-logo.png",
 });
 
 // 检查用户是否已登录
 const checkLoginStatus = () => {
   const userInfo = uni.getStorageSync("userInfo");
+  const avatar = uni.getStorageSync("userAvator");
   if (userInfo) {
     personalInfo.nickName = userInfo.nickName;
-    personalInfo.phoneNum = userInfo.phoneNum;
+    personalInfo.userImg = avatar;
+    return;
   }
+  personalInfo.nickName = "";
+  personalInfo.userImg = "/static/user-logo.png";
 };
 
 // 页面加载时检查登录状态
-checkLoginStatus();
-
+onShow(() => {
+  checkLoginStatus();
+});
+const loginComp = ref();
+const onToLogin = () => {
+  loginComp.value.open();
+};
 // 授权登录方法
-const authorizeLogin = async () => {
+const authorizeLogin = async (userInfo) => {
   try {
-    // 发起授权请求
-    const { authSetting } = await uni.getSetting();
-    if (!authSetting["scope.userInfo"]) {
-      const { authSetting: newAuthSetting } = await uni.authorize({
-        scope: "scope.userInfo",
-      });
-      if (!newAuthSetting["scope.userInfo"]) {
-        uni.showToast({
-          title: "用户拒绝授权",
-          icon: "none",
-        });
-        return;
-      }
-    }
-
-    // 获取用户信息
-    const { userInfo } = await uni.getUserInfo({
-      provider: "weixin",
-    });
-
     // 调用微信登录接口获取 code
     const { code } = await uni.login({
       provider: "weixin",
@@ -110,18 +97,39 @@ const authorizeLogin = async () => {
     // 这里需要将 code 和用户信息发送到后端服务器，以下是示例代码，实际使用时需要替换为真实的后端接口地址
     const res = await login({
       code,
-      ...userInfo,
+      nick_name: userInfo.nickName,
+      avatar: userInfo.avatarUrl,
     });
     // 处理后端返回的结果
     if (res.code === 200) {
+      const fileSysObj = uni.getFileSystemManager();
+
+      console.log("res.getFileSystemManager", fileSysObj);
+      fileSysObj.saveFile({
+        tempFilePath: userInfo.avatarUrl,
+        success: (res) => {
+          console.log("saveFile---", res.savedFilePath);
+          personalInfo.userImg = res.savedFilePath;
+          uni.setStorageSync("userAvator", res.savedFilePath);
+        },
+        fail: (err) => {
+          console.log("saveFile---fail", err);
+        },
+        complete: (res) => {
+          console.log("saveFile---complete", res);
+        },
+      });
       // 登录成功，保存用户信息到本地存储
-      uni.setStorageSync("userInfo", { ...userInfo, userId: res.data.user_id });
+      uni.setStorageSync("userInfo", {
+        ...userInfo,
+        userId: res.data.user_id,
+      });
       personalInfo.nickName = userInfo.nickName;
-      personalInfo.phoneNum = userInfo.phoneNum;
       uni.showToast({
         title: "登录成功",
         icon: "success",
       });
+      loginComp.value.close();
     } else {
       // 登录失败，提示用户
       uni.showToast({
@@ -152,7 +160,7 @@ const authorizeLogin = async () => {
   top: 48rpx;
 }
 .user-cell {
-  margin-bottom: 10rpx;
+  margin-bottom: 30rpx;
 }
 .user-logo {
   width: 110rpx;
@@ -170,8 +178,9 @@ const authorizeLogin = async () => {
   background: linear-gradient(180deg, rgba(198, 224, 255, 0) 0%, #f2f3f5 100%);
 }
 .user {
-  font-size: 36rpx;
+  font-size: 40rpx;
   color: #3f434e;
+  margin-left: 10px;
 }
 .phone {
   font-size: 24rpx;

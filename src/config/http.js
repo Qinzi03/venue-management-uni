@@ -29,7 +29,6 @@ export function http(path, params = {}, method = "POST", loading = true) {
             title: "您的登录已过期，请重新登陆",
           });
           uni.clearStorageSync();
-          uni.switchTab({ url: "/pages/person/index" });
           reject(res.data);
           return;
         }
@@ -49,9 +48,6 @@ export function http(path, params = {}, method = "POST", loading = true) {
       },
       fail(err) {
         // uni.hideLoading();
-        uni.switchTab({
-          url: "/pages/index/index",
-        });
         reject(err);
       },
       complete() {

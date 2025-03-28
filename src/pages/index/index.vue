@@ -1,6 +1,6 @@
 <template>
   <view class="page">
-    <ve-login @changeStatus="onChangeLoginStatus"></ve-login>
+    <ve-logout-text @changeStatus="onChangeLoginStatus"></ve-logout-text>
     <view v-if="loginStatus" class="content">
       <view class="search">
         <uv-search
