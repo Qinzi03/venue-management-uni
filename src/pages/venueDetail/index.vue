@@ -22,8 +22,10 @@
               {{ detailForm.phone }}</view
             >
             <view v-if="detailForm.Notice" class="flex notice textColor">
-              <uv-notice-bar :text="detailForm.Notice"></uv-notice-bar>
-
+              <uv-notice-bar
+                :text="detailForm.Notice"
+                :customStyle="{ 'border-radius': '8px' }"
+              ></uv-notice-bar>
               <view class="delNoticeIcon" @click="onCancelPub"
                 ><uv-icon name="close-circle" color="#f9ae3d"></uv-icon
               ></view>
@@ -55,10 +57,13 @@
 
     <view class="cardContent">
       <view class="cardList" v-for="(item, index) in list" :key="item.id">
-        <view class="marginT10 font28 flex-start">
-          <view class="label">桌子编号：</view
-          ><view class="textColor">{{ index + 1 }}</view></view
-        >
+        <view class="flex-between marginT10 font28">
+          <view class="flex-start">
+            <view class="label">桌子编号：</view
+            ><view class="textColor">{{ index + 1 }}</view></view
+          >
+          <view class="textPinkColor">{{ item.sign_in_count }}</view>
+        </view>
         <view class="marginT10 marginB20 font28 flex-start"
           ><view class="label">使用状态：</view
           ><view class="textColor">{{ item.statusStr }}</view></view
@@ -82,7 +87,7 @@
           </view>
           <view class="marginR20">
             <uv-button
-              :text="`${item.status ? '开机' : '关机'}`"
+              :text="`${!item.status ? '开机' : '关机'}`"
               type="primary"
               color="#9fdfca"
               size="small"
@@ -128,6 +133,8 @@ import {
   delNotice,
 } from "@/config/api.js";
 import { onLoad } from "@dcloudio/uni-app";
+import { formatDate } from "@/utils/util.js";
+
 let detailForm = reactive({
   name: "",
   address: "",
@@ -141,7 +148,7 @@ const onClockInSingle = async (id) => {
     duration: 2000,
     title: "打卡成功！",
   });
-  getSignInStatus();
+  refresh();
 };
 
 const notice = ref("");
@@ -163,7 +170,7 @@ const onConfirmPub = async () => {
   try {
     await publishNotice({ venue_id: venueId.value, notice: notice.value });
 
-    getDetailsInfo(venueId.value);
+    refresh();
   } finally {
     publishModal.value.closeLoading();
     publishModal.value.close();
@@ -172,12 +179,12 @@ const onConfirmPub = async () => {
 
 const onCancelPub = async () => {
   await delNotice({ venue_id: venueId.value });
-  getDetailsInfo(venueId.value);
+  refresh();
 };
 const onDelTable = async (item) => {
   await delTable({ table_id: item.id });
 
-  getTableDetail(venueId.value);
+  refresh();
 };
 const onChangeTableStatus = () => {};
 
@@ -199,7 +206,8 @@ const getTableDetail = async (id) => {
     res.data &&
     res.data.map((item) => {
       return {
-        id: item.ID,
+        id: item.table_id,
+        sign_in_count: item.sign_in_count,
         status: item.Status,
         statusStr: item.Status ? "使用中" : "未开始",
       };
@@ -207,20 +215,13 @@ const getTableDetail = async (id) => {
 };
 const onAdd = async () => {
   await addTable({ venue_id: venueId.value });
-
-  getTableDetail(venueId.value);
+  refresh();
 };
 
 const hasSignIn = ref(false);
 
 const getSignInStatus = async () => {
-  const today = new Date()
-    .toLocaleDateString("zh", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    })
-    .replaceAll("/", "-");
+  const today = formatDate(new Date());
   const res = await dailySignIn({ date: today });
   // 场馆id在日签到的所有场馆中，表示已经签到过了
   hasSignIn.value =
@@ -230,18 +231,22 @@ const getSignInStatus = async () => {
     false;
 };
 
-onLoad((option) => {
-  console.log(option);
-  venueId.value = option.id;
+const refresh = () => {
   getDetailsInfo(venueId.value);
   getTableDetail(venueId.value);
   getSignInStatus();
+};
+
+onLoad((option) => {
+  console.log(option);
+  venueId.value = option.id;
+  refresh();
 });
 
 // 跳转人员详情
-const onToPage = (item) => {
+const onToPage = () => {
   uni.navigateTo({
-    url: "/pages/venuePersonManage/index",
+    url: `/pages/venuePersonManage/index?id=${venueId.value}`,
   });
 };
 </script>
@@ -256,6 +261,10 @@ const onToPage = (item) => {
   .content-class {
     padding: 0 15px 8px !important;
   }
+  .uv-cell__title-text {
+    font-size: 16px !important;
+    font-weight: bold;
+  }
 }
 
 .row {
@@ -269,6 +278,7 @@ const onToPage = (item) => {
 }
 .notice {
   margin-top: 8px;
+
   .delNoticeIcon {
     position: relative;
     top: -16px;
@@ -285,5 +295,10 @@ const onToPage = (item) => {
 }
 .slot-content {
   width: 240px;
+}
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>

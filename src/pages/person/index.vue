@@ -1,6 +1,6 @@
 <template>
   <view class="person-page">
-    <view class="list-content formContent">
+    <view class="list-content">
       <view class="flex-start user-cell">
         <view>
           <uv-avatar
@@ -151,15 +151,12 @@ const authorizeLogin = async (userInfo) => {
 <style lang="scss" scoped>
 @import url(../../scss/global.scss);
 .person-page {
-  background-image: url("https://fscdn.zto.com/GetPublicFile/clouddrive/PRO_396/person-bg.png");
-  background-size: 100% 50%;
-  background-repeat: no-repeat;
   height: 100vh;
-  background-color: #f3f4f6;
 }
 .list-content {
   position: relative;
-  top: 48rpx;
+  background-color: #d6f3ea;
+  padding: 24px 16px 0 16px;
 }
 .user-cell {
   margin-bottom: 30rpx;

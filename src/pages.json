@@ -1,81 +1,91 @@
 {
-	"pages": [
-		{
-			"path": "pages/index/index",
-			"style": {
-				"navigationBarTitleText": "首页"
-			}
-		},
-		{
-			"path": "pages/person/index",
-			"style": {
-				"navigationBarTitleText": "个人"
-			}
-		},
-		{
-			"path": "pages/venue/index",
-			"style": {
-				"navigationBarTitleText": "场馆"
-			}
-		},
-		{
-			"path": "pages/createVenue/index",
-			"style": {
-				"navigationBarTitleText": "创建场馆"
-			}
-		},
-		{
-			"path": "pages/venueDetail/index",
-			"style": {
-				"navigationBarTitleText": "场馆详情"
-			}
-		},
-		{
-			"path": "pages/venuePersonManage/index",
-			"style": {
-				"navigationBarTitleText": "场馆人员管理"
-			}
-		},
-		{
-			"path": "pages/search/index",
-			"style": {
-				"navigationBarTitleText": "搜索页"
-			}
-		},
-		{
-			"path": "pages/addPartner/index",
-			"style": {
-				"navigationBarTitleText": "添加合伙人"
-			}
-		}
-	],
-	"entryPagePath":"pages/index/index",
-	"tabBar": {
-		"color":"#7d7e80",
-		"selectedColor": "#9fdfca",
-		"fontSize":"14px",
-		"list": [{
-			"pagePath": "pages/index/index",
-			"text": "首页"
-		}, {
-			"pagePath": "pages/venue/index",
-			"text": "场馆"
-		}, {
-			"pagePath": "pages/person/index",
-			"text": "我的"
-		}]
-	},
-	"globalStyle": {
-		"navigationBarTextStyle": "white",
-		"navigationBarTitleText": "场馆管理中心",
-		"navigationBarBackgroundColor": "#9fdfca",
-		"backgroundColor": "#F8F8F8"
-	},
-	"easycom": {
-		  "autoscan": true,
-		  "custom": {
-			  "^uv-(.*)": "@climblee/uv-ui/components/uv-$1/uv-$1.vue",
-				"^ve-(.*)":"@/components/ve-$1/ve-$1.vue"
-		  }
-	  }
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "首页"
+      }
+    },
+    {
+      "path": "pages/person/index",
+      "style": {
+        "navigationBarTitleText": "个人"
+      }
+    },
+    {
+      "path": "pages/venue/index",
+      "style": {
+        "navigationBarTitleText": "场馆"
+      }
+    },
+    {
+      "path": "pages/createVenue/index",
+      "style": {
+        "navigationBarTitleText": "创建场馆"
+      }
+    },
+    {
+      "path": "pages/venueDetail/index",
+      "style": {
+        "navigationBarTitleText": "场馆详情"
+      }
+    },
+    {
+      "path": "pages/venuePersonManage/index",
+      "style": {
+        "navigationBarTitleText": "场馆人员管理"
+      }
+    },
+    {
+      "path": "pages/search/index",
+      "style": {
+        "navigationBarTitleText": "搜索页"
+      }
+    },
+    {
+      "path": "pages/addPartner/index",
+      "style": {
+        "navigationBarTitleText": "添加合伙人"
+      }
+    }
+  ],
+  "entryPagePath": "pages/index/index",
+  "tabBar": {
+    "color": "#7d7e80",
+    "selectedColor": "#9fdfca",
+    "fontSize": "14px",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "iconPath": "static/home-black.jpg",
+        "selectedIconPath": "static/home-black.jpg",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/venue/index",
+        "iconPath": "static/heart-blk.jpeg",
+        "selectedIconPath": "static/heart-blk.jpeg",
+        "text": "场馆"
+      },
+      {
+        "pagePath": "pages/person/index",
+        "iconPath": "static/person-black.jpg",
+        "selectedIconPath": "static/person-black.jpg",
+        "text": "我的"
+      }
+    ]
+  },
+  "globalStyle": {
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "场馆管理中心",
+    "navigationBarBackgroundColor": "#9fdfca",
+    "backgroundColor": "#F8F8F8"
+  },
+  "easycom": {
+    "autoscan": true,
+    "custom": {
+      "^uv-(.*)": "@climblee/uv-ui/components/uv-$1/uv-$1.vue",
+      "^ve-(.*)": "@/components/ve-$1/ve-$1.vue"
+    }
+  }
 }

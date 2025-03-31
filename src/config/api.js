@@ -41,16 +41,16 @@ export const searchUser = (params) => {
 };
 // 添加合作伙伴
 export const addPartner = (params) => {
-  return http(`/auth/venue/parter/add`, params, "POST");
+  return http(`/auth/venue/partner/add`, params, "POST");
 };
 // 删除合作伙伴
 export const delPartner = (params) => {
-  return http(`/auth/venue/parter/delete`, params, "POST");
+  return http(`/auth/venue/partner/delete`, params, "POST");
 };
 // 合作伙伴列表
-export const getPartnerList = (params) => {
-  return http(`/auth/venue/parter/all/${params.id}`, params, "GET");
-};
+// export const getPartnerList = (params) => {
+//   return http(`/auth/venue/partner/all/${params.id}`, params, "GET");
+// };
 // 日签到记录
 export const dailySignIn = (params) => {
   return http(`/auth/venue/daily_sign_in`, params, "GET");
@@ -70,4 +70,8 @@ export const addTable = (params) => {
 // 删除桌子
 export const delTable = (params) => {
   return http(`/auth/table/del`, params, "POST");
+};
+// 查询时间范围内访问当前场馆的用户列表
+export const visitedByDateRange = (params) => {
+  return http(`/auth/venue/visited_users_by_date_range`, params, "GET");
 };

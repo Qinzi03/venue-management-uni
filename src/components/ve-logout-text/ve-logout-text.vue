@@ -16,7 +16,7 @@
 </template>
 
 <script setup>
-import { reactive, defineEmits } from "vue";
+import { reactive } from "vue";
 import { onShow } from "@dcloudio/uni-app";
 // 定义个人信息数据
 const personalInfo = reactive({

@@ -12,8 +12,9 @@
             class="cardList"
             v-for="item in createList"
             :key="item.venue_id"
+            @click="onToPage(item)"
           >
-            <view class="row" @click="onToPage(item)">
+            <view class="row">
               <view class="title">{{ item.venue_name }}</view>
               <view class="value"
                 >打卡人数：{{ item.sign_in_count || 0 }}人</view
@@ -24,6 +25,9 @@
               <!-- <view class="person">场馆合伙人：</view> -->
 
               <view class="row marginT20">
+                <view class="flex" @click.stop="onClickPartner(item)">
+                  <uv-icon name="plus"></uv-icon>增加合伙人
+                </view>
                 <view
                   class="avatar"
                   v-for="partnerItem in item.partner_list"
@@ -36,14 +40,10 @@
                   ></uv-avatar>
                   <view
                     class="deleteIcon"
-                    @click="onDelPartner(item, partnerItem)"
+                    @click.stop="onDelPartner(item, partnerItem)"
                   >
                     <uv-icon name="close-circle"></uv-icon>
                   </view>
-                </view>
-
-                <view class="flex" @click.stop="onClickPartner(item)">
-                  <uv-icon name="plus"></uv-icon>增加合伙人
                 </view>
               </view>
             </view>
@@ -56,7 +56,11 @@
           text="您还没有创建的场馆，请点击右下角进行创建"
         ></uv-empty>
       </view>
-      <view class="add" @click="onAdd"> 创建场馆 </view>
+      <movable-area class="movable-area">
+        <movable-view :x="300" :y="800" direction="all" class="movable-view">
+          <view class="add" @click="onAdd"> 创建场馆 </view>
+        </movable-view>
+      </movable-area>
     </view>
 
     <uv-modal
@@ -71,10 +75,11 @@
   </view>
 </template>
 <script setup>
-import { onMounted, ref } from "vue";
+import { ref } from "vue";
 import { myVenue, delPartner } from "@/config/api.js";
+import { onShow } from "@dcloudio/uni-app";
 import { loginStatus, onChangeLoginStatus } from "@/utils/util.js";
-onMounted(() => {
+onShow(() => {
   getListData();
 });
 
@@ -154,8 +159,8 @@ const onCancelDel = () => {
   height: 40px;
   border-radius: 60px;
   background-color: $uni-color-primary;
-  bottom: 120px;
-  right: 30px;
+  // bottom: 120px;
+  // right: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -163,9 +168,22 @@ const onCancelDel = () => {
   padding: 10px;
   text-align: center;
 }
+.movable-area {
+  //  可移动的范围
+  height: 100vh;
+  width: 750rpx;
+  top: 0;
+  position: fixed;
+  pointer-events: none; //鼠标事件可以渗透
+}
+.movable-view {
+  width: 140rpx; // 按钮大小
+  height: 140rpx;
+  pointer-events: auto; //恢复鼠标事件
+}
+
 .flex {
   display: flex;
-  flex: 1;
   justify-content: flex-end;
 }
 .marginT20 {

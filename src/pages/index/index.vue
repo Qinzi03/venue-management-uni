@@ -57,7 +57,7 @@
 import { ref, computed } from "vue";
 import { getVisitedVenue, getSignInDate, dailySignIn } from "@/config/api.js";
 import { onShow } from "@dcloudio/uni-app";
-import { loginStatus, onChangeLoginStatus } from "@/utils/util.js";
+import { loginStatus, onChangeLoginStatus, formatDate } from "@/utils/util.js";
 const onRemarkDate = ref([
   // { date: `2025-03-02`, info: "打卡", badge: true, infoColor: "#1989fa" },
   // { date: `2025-03-06`, info: "打卡", infoColor: "#1989fa", badge: true },
@@ -71,13 +71,8 @@ const getDateInfo = async () => {
   console.log("----getDateInfo", res.data, onRemarkDate.value);
 };
 const dailySignInList = ref([]);
-const today = new Date()
-  .toLocaleDateString("zh", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  })
-  .replaceAll("/", "-");
+const today = formatDate(new Date());
+
 const clickDate = ref(today);
 const change = async (res) => {
   console.log(res);
@@ -209,8 +204,8 @@ onShow(() => {
 }
 .uv-calendar__box {
   background-color: #9fdfca;
-
   border-radius: 0 0 10px 10px;
+  padding-bottom: 10px;
 }
 
 .uv-calendar-item__weeks-box-circle {
@@ -222,7 +217,7 @@ onShow(() => {
 }
 .calendars {
   height: 280px;
-  padding: 0 10px;
+  padding: 0 10px 10px;
   background-color: #fff;
   border-radius: 0 0 10px 10px;
 }
