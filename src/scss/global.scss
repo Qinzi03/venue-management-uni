@@ -131,3 +131,13 @@
 .star {
   color: rgba(211, 0, 69, 1);
 }
+
+.uv-calendar-item--checked.uv-calendar-item__weeks-box,.uv-calendar-item--checked.uv-calendar-item__weeks-box-text {
+  background-color: transparent !important;
+  color: #5a7f73 !important;
+ 
+}
+.uv-calendar-item--checked.uv-calendar-item__weeks-box .uv-calendar-item__weeks-box-item {
+  background-color: #fff !important;
+  border-radius: 40px;
+}

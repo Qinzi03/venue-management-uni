@@ -57,20 +57,20 @@
     "list": [
       {
         "pagePath": "pages/index/index",
-        "iconPath": "static/home-black.jpg",
-        "selectedIconPath": "static/home-black.jpg",
+        "iconPath": "static/home-black.png",
+        "selectedIconPath": "static/home-green.png",
         "text": "首页"
       },
       {
         "pagePath": "pages/venue/index",
-        "iconPath": "static/heart-blk.jpeg",
-        "selectedIconPath": "static/heart-blk.jpeg",
+        "iconPath": "static/heart-black.png",
+        "selectedIconPath": "static/heart-green.png",
         "text": "场馆"
       },
       {
         "pagePath": "pages/person/index",
-        "iconPath": "static/person-black.jpg",
-        "selectedIconPath": "static/person-black.jpg",
+        "iconPath": "static/user-black.png",
+        "selectedIconPath": "static/user-green.png",
         "text": "我的"
       }
     ]

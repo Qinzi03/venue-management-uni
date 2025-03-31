@@ -155,71 +155,66 @@ onShow(() => {
   justify-content: space-between;
   align-items: center;
 }
-.uv-calendar-item--disable {
-  display: none !important;
-}
 
-.uv-calendar-item__weeks-box-item {
-  height: 40px !important;
-  width: 40px !important;
-}
-.uv-calendar-item--isDay {
-  background-color: transparent !important;
-  color: #5a7f73 !important;
-
-  .uv-calendar-item__weeks-box-item {
-    background-color: #fff !important;
-    border-radius: 40px;
-  }
-}
-.uv-calendar-item--isDay-text {
-  color: #5a7f73 !important;
-}
-.calendar-item--uv-calendar-item--checked {
-  background-color: transparent !important;
-  color: #5a7f73 !important;
-  .uv-calendar-item__weeks-box-item {
-    background-color: #fff !important;
-    border-radius: 40px;
-  }
-}
-.uv-calendar__header {
-  background-color: #8bc4b1;
-  border-bottom-width: 0px !important;
-  border-radius: 10px 10px 0 0;
-  height: 40px !important;
-  .uv-calendar__header-btn {
-    border-top-color: #fff !important;
-    border-left-color: #fff !important;
-  }
-  .uv-calendar__header-text {
-    color: #fff !important;
-  }
-}
-.uv-calendar__weeks-day {
-  display: none !important;
-}
-.uv-calendar__weeks-day {
-  border-bottom-width: 0px !important;
-}
-.uv-calendar__box {
-  background-color: #9fdfca;
-  border-radius: 0 0 10px 10px;
-  padding-bottom: 10px;
-}
-
-.uv-calendar-item__weeks-box-circle {
-  background-color: #f56c6c !important;
-  right: 0px !important;
-}
-.uv-calendar-item__weeks-lunar-text {
-  color: #5a7f73 !important;
-}
-.calendars {
+::v-deep(.calendars) {
   height: 280px;
   padding: 0 10px 10px;
   background-color: #fff;
   border-radius: 0 0 10px 10px;
+
+  .uv-calendar-item--disable {
+    display: none !important;
+  }
+
+  .uv-calendar-item__weeks-box-item {
+    height: 40px !important;
+    width: 40px !important;
+  }
+
+  .uv-calendar__header {
+    background-color: #8bc4b1;
+    border-bottom-width: 0px !important;
+    border-radius: 10px 10px 0 0;
+    height: 40px !important;
+    .uv-calendar__header-btn {
+      border-top-color: #fff !important;
+      border-left-color: #fff !important;
+    }
+    .uv-calendar__header-text {
+      color: #fff !important;
+    }
+  }
+  .uv-calendar__weeks-day {
+    display: none !important;
+  }
+  .uv-calendar__weeks-day {
+    border-bottom-width: 0px !important;
+  }
+  .uv-calendar__box {
+    background-color: #9fdfca;
+    border-radius: 0 0 10px 10px;
+    padding-bottom: 10px;
+  }
+
+  .uv-calendar-item__weeks-box-circle {
+    background-color: #f56c6c !important;
+    right: 0px !important;
+  }
+  .uv-calendar-item__weeks-lunar-text {
+    color: #5a7f73 !important;
+  }
+
+  .uv-calendar-item--isDay {
+    background-color: transparent !important;
+    color: #5a7f73 !important;
+    .uv-calendar-item__weeks-box-item {
+      background-color: #fff !important;
+      border-radius: 40px;
+    }
+  }
+  .uv-calendar-item--isDay-text {
+    color: #5a7f73 !important;
+  }
 }
 .search {
   padding: 10px 16px;

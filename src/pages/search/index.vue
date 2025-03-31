@@ -81,6 +81,7 @@ onMounted(() => {
   margin-top: 20px;
 }
 .listItem {
-  padding: 10px;
+  padding: 16px 10px;
+  border-bottom: 1px solid #efefef;
 }
 </style>
