@@ -149,6 +149,9 @@ onLoad((option) => {
   width: 48%;
 }
 ::v-deep(.header) {
+  margin-top: 12px;
+  padding: 5px 12px;
+
   .uv-drop-down {
     padding: 0 !important;
     border-bottom: none !important;

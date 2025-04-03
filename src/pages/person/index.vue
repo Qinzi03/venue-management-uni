@@ -18,31 +18,24 @@
       </view>
       <view class="group-content">
         <uv-cell-group :border="false">
-          <uv-cell title="我的积分" isLink size="large">
+          <uv-cell title="我的积分" isLink size="large" @click="onTodo">
             <template #icon>
               <view class="icon-bg">
                 <uv-icon name="gift-fill"></uv-icon>
               </view>
             </template>
           </uv-cell>
-          <uv-cell title="数据报表" isLink size="large">
+          <uv-cell title="数据报表" isLink size="large" @click="onTodo">
             <template #icon>
               <view class="icon-bg">
                 <uv-icon name="eye-fill"></uv-icon>
               </view>
             </template>
           </uv-cell>
-          <uv-cell title="记录流水" isLink size="large">
+          <uv-cell title="记录流水" isLink size="large" @click="onTodo">
             <template #icon>
               <view class="icon-bg">
                 <uv-icon name="file-text-fill"></uv-icon>
-              </view>
-            </template>
-          </uv-cell>
-          <uv-cell title="关于软件" isLink size="large">
-            <template #icon>
-              <view class="icon-bg">
-                <uv-icon name="setting-fill"></uv-icon>
               </view>
             </template>
           </uv-cell>
@@ -145,6 +138,13 @@ const authorizeLogin = async (userInfo) => {
       icon: "none",
     });
   }
+};
+
+const onTodo = () => {
+  uni.showToast({
+    title: "功能开发中...即将上线",
+    icon: "none",
+  });
 };
 </script>
 
