@@ -176,9 +176,8 @@ onShow(() => {
     border-bottom-width: 0px !important;
     border-radius: 10px 10px 0 0;
     height: 40px !important;
-    .uv-calendar__header-btn {
-      border-top-color: #fff !important;
-      border-left-color: #fff !important;
+    .uv-calendar__header-btn-box {
+      display: none;
     }
     .uv-calendar__header-text {
       color: #fff !important;

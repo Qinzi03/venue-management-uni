@@ -32,10 +32,17 @@
               </view>
             </template>
           </uv-cell>
-          <uv-cell title="记录流水" isLink size="large" @click="onTodo">
+          <!-- <uv-cell title="记录流水" isLink size="large" @click="onTodo">
             <template #icon>
               <view class="icon-bg">
                 <uv-icon name="file-text-fill"></uv-icon>
+              </view>
+            </template>
+          </uv-cell> -->
+          <uv-cell title="关于软件" isLink size="large" @click="onToAbout">
+            <template #icon>
+              <view class="icon-bg">
+                <uv-icon name="setting-fill"></uv-icon>
               </view>
             </template>
           </uv-cell>
@@ -144,6 +151,11 @@ const onTodo = () => {
   uni.showToast({
     title: "功能开发中...即将上线",
     icon: "none",
+  });
+};
+const onToAbout = () => {
+  uni.navigateTo({
+    url: "/pages/about/index",
   });
 };
 </script>

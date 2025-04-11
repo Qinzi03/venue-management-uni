@@ -28,6 +28,9 @@ export function http(path, params = {}, method = "POST", loading = true) {
             duration: 2000,
             title: "您的登录已过期，请重新登陆",
           });
+          uni.switchTab({
+            url: "/pages/person/index",
+          });
           uni.clearStorageSync();
           reject(res.data);
           return;

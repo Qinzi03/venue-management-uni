@@ -61,7 +61,15 @@
     </view>
     <!-- tab -->
     <view>
-      <uv-tabs :list="list" lineColor="#9fdfca" @click="onClickTab"></uv-tabs>
+      <uv-tabs :list="tabs" lineColor="#9fdfca" @click="onClickTab"></uv-tabs>
+      <uv-cell-group :insert="true" :border="false">
+        <uv-cell
+          v-for="item in list"
+          :key="item.user_id"
+          :title="item.nick_name"
+          :value="`${item.visited_count}次`"
+        ></uv-cell>
+      </uv-cell-group>
     </view>
   </view>
 </template>
@@ -90,12 +98,14 @@ const onClickDate = (res) => {
 };
 
 const venueId = ref("");
+const list = ref([]);
 const onClickTab = async (index) => {
   const res = await visitedByDateRange({
     venue_id: venueId.value,
     start_date: time.label[0],
     end_date: time.label[1],
   });
+  list.value = res.data;
   console.log(res);
 };
 
@@ -116,7 +126,7 @@ const onCloseDate = () => {
   dropDownTime.value.close();
 };
 
-const list = ref([
+const tabs = ref([
   {
     name: "全部",
     index: 0,
@@ -149,7 +159,7 @@ onLoad((option) => {
   width: 48%;
 }
 ::v-deep(.header) {
-  margin-top: 12px;
+  // margin-top: 12px;
   padding: 5px 12px;
 
   .uv-drop-down {
