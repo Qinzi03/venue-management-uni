@@ -71,6 +71,10 @@ export const addTable = (params) => {
 export const delTable = (params) => {
   return http(`/auth/table/del`, params, "POST");
 };
+// 改变桌子状态
+export const changeTableStatus = (params) => {
+  return http(`/auth/table/status/switch`, params, "POST");
+};
 // 查询时间范围内访问当前场馆的用户列表
 export const visitedByDateRange = (params) => {
   return http(`/auth/venue/visited_users_by_date_range`, params, "GET");

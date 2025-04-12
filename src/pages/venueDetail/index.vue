@@ -26,7 +26,7 @@
                 :text="detailForm.Notice"
                 :customStyle="{ 'border-radius': '8px' }"
               ></uv-notice-bar>
-              <view class="delNoticeIcon" @click="onCancelPub"
+              <view class="delNoticeIcon" @click="onDelPub"
                 ><uv-icon name="close-circle" color="#f9ae3d"></uv-icon
               ></view>
             </view>
@@ -91,7 +91,7 @@
               type="primary"
               color="#9fdfca"
               size="small"
-              @click="onChangeTableStatus"
+              @click="onChangeTableStatus(item)"
             ></uv-button>
           </view>
         </view>
@@ -110,6 +110,8 @@
         title="发布公告"
         :showCancelButton="true"
         :asyncClose="true"
+        negativeTop="120"
+        :closeOnClickOverlay="false"
         @confirm="onConfirmPub"
         @cancel="onCancelPub"
       >
@@ -131,6 +133,7 @@ import {
   addTable,
   delTable,
   delNotice,
+  changeTableStatus,
 } from "@/config/api.js";
 import { onLoad } from "@dcloudio/uni-app";
 import { formatDate } from "@/utils/util.js";
@@ -177,16 +180,22 @@ const onConfirmPub = async () => {
   }
 };
 
-const onCancelPub = async () => {
+const onDelPub = async () => {
   await delNotice({ venue_id: venueId.value });
   refresh();
+};
+const onCancelPub = async () => {
+  publishModal.value.close();
 };
 const onDelTable = async (item) => {
   await delTable({ table_id: item.id });
 
   refresh();
 };
-const onChangeTableStatus = () => {};
+const onChangeTableStatus = async (item) => {
+  await changeTableStatus({ table_id: item.id });
+  refresh();
+};
 
 const list = ref([]);
 
@@ -208,8 +217,8 @@ const getTableDetail = async (id) => {
       return {
         id: item.table_id,
         sign_in_count: item.sign_in_count,
-        status: item.Status,
-        statusStr: item.Status ? "使用中" : "未开始",
+        status: item.status,
+        statusStr: item.status ? "使用中" : "未开始",
       };
     });
 };
@@ -295,6 +304,7 @@ const onToPage = () => {
 }
 .slot-content {
   width: 240px;
+  height: 100px;
 }
 .flex-between {
   display: flex;
